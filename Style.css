@@ -297,6 +297,25 @@ p.head_edit{
 #menu button:active{
 	box-shadow: 0 0 4px lightgrey;
 }
+#menu button.pic{
+	background: linear-gradient(to bottom,rgb(54,157,247),rgb(47,102,267));;
+	border:none;
+	width:45px;
+	float: right;
+	height:100%;
+	text-align: center;
+	color: white;
+	float:right;
+	font-size: 14pt;
+	margin-right: 2px;
+}
+#menu button.pic:hover{
+	box-shadow: 0 0 4px lightgrey;
+	cursor: pointer;	
+}
+#menu button.pic:active{
+	box-shadow: 0 0 4px lightgrey;
+}
 #register p{
 	font-size: 10pt;
 }
@@ -542,6 +561,7 @@ button.mess:active{
 	position: relative;
 	width: 98%;
 	margin-top: 5px;
+	overflow: hidden;
 }
 p.mess{
 	position: relative;
@@ -588,6 +608,9 @@ button.mess_b {
  	outline: none;
  	margin-left: 0px;
  	z-index: 7;
+}
+img.butt {
+	height: 90%;
 }
 button.mess_b:hover {
 	color: grey;
