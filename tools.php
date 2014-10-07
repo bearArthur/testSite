@@ -11,40 +11,42 @@
 	if ((!isset($_GET['id'])) | (!isset($_GET['lg']))) {
 		header("Location: tools.php?id={$_SESSION['id']}&lg={$_SESSION['lang']}");
 	}
-	$id_page = $_SESSION['id'];
+	$id_page = $_GET['id'];
 	$_SESSION['lang'] = $_GET['lg'];
 	$text = parse_ini_file($_SESSION['lang'].".ini");
 	if (isset($_POST['ns_ok'])) {
 		change_name_surname();
-		header("Location: tools.php");
+		header("Location: tools.php?id={$id_page}&lg={$_SESSION['lang']}");
 	}
 
 	if (isset($_POST['email_ok'])) {
 		$err_em = change_email($text);
 		if ($err_em == '') {
-			header("Location: tools.php");
+			header("Location: tools.php?id={$id_page}&lg={$_SESSION['lang']}");
+		}
+	}
+	if (isset($_POST['login'])) {
+		if (!$_SESSION['id']) {
+			header("Location: index.php?home=login&lg={$_SESSION['lang']}");
+		}
+		else {			
+			log_out();
 		}
 	}
 	if (isset($_POST['pass_ok'])) {
 		$err_pass = change_pass($text);
 		if ($err_pass == '') {
-			header("Location: tools.php");
+			header("Location: tools.php?id={$id_page}&lg={$_SESSION['lang']}");
 		}
 	}
-	
-		
-
+	if (isset($_POST['profile'])) {
+		header("Location: user.php?id={$_SESSION['id']}&page=1&lg={$_SESSION['lang']}");
+	}	
 	if (isset($_POST['tools'])) {
 		header("Location: tools.php");
 	}	
 	if (isset($_POST['home'])) {
-		header("Location: user.php?id={$_SESSION['id']}&page=1&lg={$_SESSION['lang']}");
-	}
-	if (isset($_POST['exit'])) {
-		log_out();
-	}
-	if (isset($_POST['friends'])) {
-		header("Location: users.php");
+		header("Location: index.php");
 	}
 	if (isset($_POST['up_ok'])) {
 		upload_image();
@@ -65,24 +67,45 @@
 	<body>
 
 		<div id="back">
-			<form method="POST"  action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>" id="menu">
-				<a  href="tools.php?id=<?php echo $id_page; ?>&lg=ua"><img src="images/ua.gif" class="lang"></img></a>
-				<a  href="tools.php?id=<?php echo $id_page; ?>&lg=en"><img src="images/en.gif" class="lang"></img></a>
-				<button type="submit" name="exit"><?php echo $text['exit']; ?></button>
-				<button type="submit" name="tools"><?php echo $text['tools']; ?></button>
-				<button type="submit" name="friends"><?php echo $text['people']; ?></button>
-				<button type="submit" name="home"><?php echo $text['profile']; ?></button>
-			</form>
+
+			<div id="menu">
+				<form method="POST"  action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>" id="menu_b">
+					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+					<button type="submit" name="profile"><?php echo $text['profile']; ?></button>
+					<button type="submit" name="tools"><?php echo $text['tools']; ?></button>
+					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
+				</form>
+				<a  href="tools.php?id=<?php echo $id_page; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
+				<a  href="tools.php?id=<?php echo $id_page; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
+			</div>
 
 			
 			<div id="info">
-				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang'] ?>" class="name"><?php echo $_SESSION['name'].'  '.$_SESSION['surname']; ?></a>
-				<img src="<?php echo $_SESSION['photo']; ?>"></img>
+				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
+				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
+				<table>
+					<?php if (isset($_SESSION['id'])): ?>
+						<tr>
+							<td><p><?php echo $text['email']; ?></p></td>
+							<td><p><?php echo $_SESSION['email']; ?></p></td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<td><p><?php echo $text['date_reg']; ?></p></td>
+						<td><p><?php echo $_SESSION['registered']; ?></p></td>
+					</tr>
+					<tr>
+						<td><p><?php echo $text['date_log']; ?></p></td>
+						<td><p><?php echo $_SESSION['last_login']; ?></p></td>
+					</tr>
+				</table>
 			</div>
 
 			<div id="content">			
+
+				<p class="headd"><?php echo $text['tools_user']; ?></p>
 				
-				<form method="POST" enctype="multipart/form-data" action="tools.php?id=<?php echo $_SESSION['id']; ?>&lg=<?php echo $_SESSION['lang'] ?>">				
+				<form method="POST" enctype="multipart/form-data" action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>">				
 					<table>
 						<tr>
 							<td><?php echo $text['ch_ava']; ?></td>
@@ -95,7 +118,7 @@
 					</table>
 				</form>
 
-				<form method="POST" action="tools.php?id=<?php echo $_SESSION['id']; ?>&lg=<?php echo $_SESSION['lang'] ?>">
+				<form method="POST" action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>">
 					<table>
 						<tr>
 							<td><?php echo $text['name']; ?></td>
@@ -112,7 +135,7 @@
 					</table>
 				</form>
 
-				<form method="POST" action="tools.php?id=<?php echo $_SESSION['id']; ?>&lg=<?php echo $_SESSION['lang'] ?>">
+				<form method="POST" action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>">
 					<table>	
 						<tr>
 							<td><p><?php echo $text['email']; ?></p></td>
@@ -129,7 +152,7 @@
 					</table>
 				</form>
 
-				<form method="POST" action="tools.php?id=<?php echo $_SESSION['id']; ?>&lg=<?php echo $_SESSION['lang'] ?>">
+				<form method="POST" action="tools.php?id=<?php echo $id_page; ?>&lg=<?php echo $_SESSION['lang'] ?>">
 					<table>
 						<tr>
 							<td><p><?php echo $text['npass']; ?></p></td>

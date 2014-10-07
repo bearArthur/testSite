@@ -3,10 +3,7 @@
 	mb_internal_encoding("UTF-8");	
 	include('db.php');
 	include ('log_reg.php');
-	if (!$_SESSION['id']) {
-		header("Location: index.php");
-	}
-	if ((!isset($_GET['lg'])) | (!isset($_GET['id'])) | (!isset($_GET['page']))) {
+	if ((!isset($_GET['lg'])) |  (!isset($_GET['page']))) {
 		header("Location: user.php?id={$_SESSION['id_page']}&page=1&lg={$_SESSION['lang']}");
 	}
 	$id_page = $_GET['id'];
@@ -35,9 +32,6 @@
 	}
 	if (isset($_POST['profile'])) {
 		header("Location: user.php?id={$_SESSION['id']}&page=1&lg={$_SESSION['lang']}");
-	}
-	if (isset($_POST['friends'])) {
-		header("Location: users.php");
 	}
 	// $likn = "user.php";
 	if (isset($_POST['lock'])) {
@@ -75,25 +69,31 @@
 
 		<div id="back">
 
-			<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="menu">
-				<a  href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&lg=ua"><img src="images/ua.gif" class="lang"></img></a>
-				<a  href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&lg=en"><img src="images/en.gif" class="lang"></img></a>
-				<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
-				<button type="submit" name="tools"><?php echo $text['tools']; ?></button>
-				<button type="submit" name="friends"><?php echo $text['people']; ?></button>
-				<button type="submit" name="profile"><?php echo $text['profile']; ?></button>
-				<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
-			</form>
 
+
+			<div id="menu">
+				<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="menu_b">					
+					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+					<?php if (isset($_SESSION['id'])): ?>
+						<button type="submit" name="profile"><?php echo $text['profile']; ?></button>
+						<button type="submit" name="tools"><?php echo $text['tools']; ?></button>
+					<?php endif; ?>
+					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
+				</form>
+				<a  href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
+				<a  href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>				
+			</div>
 			
 			<form id="info" method="POST" action="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>">
-				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['name'].'  '.$_SESSION['surname']; ?></a>
-				<img src="<?php echo $_SESSION['photo']; ?>"></img>
+				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
+				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 				<table>
-					<tr>
-						<td><p><?php echo $text['email']; ?></p></td>
-						<td><p><?php echo $_SESSION['email']; ?></p></td>
-					</tr>
+					<?php if (isset($_SESSION['id'])): ?>
+						<tr>
+							<td><p><?php echo $text['email']; ?></p></td>
+							<td><p><?php echo $_SESSION['email']; ?></p></td>
+						</tr>
+					<?php endif; ?>
 					<tr>
 						<td><p><?php echo $text['date_reg']; ?></p></td>
 						<td><p><?php echo $_SESSION['registered']; ?></p></td>
@@ -112,22 +112,26 @@
 				<?php 
 					endif; 
 					$check_a = user_check_a($_GET['id']);
-					if (($check_a == false) && ($_SESSION['admin'] == true) && ($check_b == false)): 
+					if (($check_a == false) && (isset($_SESSION['admin'])) && ($_SESSION['admin'] == true) && ($check_b == false)): 
 				?>
 					<button name="lock" type="submit"><?php echo $text['ban']; ?></button>
-				<?php elseif (($check_a == false) && ($_SESSION['admin'] == true) && ($check_b == true)): ?>
+				<?php elseif (($check_a == false) && (isset($_SESSION['admin'])) && ($_SESSION['admin'] == true) && ($check_b == true)): ?>
 					<button name="unlock" type="submit"><?php echo $text['dis_ban']; ?></button>
 				<?php endif; ?>
 			</form>
 
 			<div id="content">							
 
-				<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="send">			
-					<p class="headd"><?php echo $text['write_mess']; ?></p>	
-					<textarea name="send_capt" rows="1" cols="68" /required></textarea>	
-					<textarea name="send_mess" rows="4" cols="68" /required></textarea>			
-					<button name="send_ok" type="submit"><?php echo $text['send']; ?></button>
-				</form>			
+				<?php if (isset($_SESSION['id'])): ?>	
+					<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="send">			
+						<p class="headd"><?php echo $text['write_mess']; ?></p>	
+						<textarea name="send_capt" rows="1" cols="68" /required></textarea>	
+						<textarea name="send_mess" rows="4" cols="68" /required></textarea>			
+						<button name="send_ok" type="submit"><?php echo $text['send']; ?></button>
+					</form>		
+				<?php endif; ?>	
+
+				<p class="headd1"><?php echo $text['messages'] ?></p>
 
 				<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="pager_b">
 					<a href="user.php?id=<?php echo $id_page; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="pager"><<</a>
@@ -171,9 +175,11 @@
 				?>
 				<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="mess" id="mess_<?php echo $key['id']; ?>">		
 					<img src="<?php echo $key['photo']; ?>" class="mess"></img>	
-					<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $key['id']; ?>">x</button>
-					<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $key['id']; ?>">!</button>
-					<a href="user.php?id=<?php echo $key['id_user']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="capt"><?php echo $key['name'].' '.$key['surname']; ?></a><br/><br/>
+					<?php if (isset($_SESSION['id'])): ?>
+						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $key['id']; ?>">x</button>
+						<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $key['id']; ?>">!</button>
+					<?php endif; ?>
+					<a href="user.php?id=<?php echo $key['id_user']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="capt"><?php echo $key['login']; ?></a><br/><br/>
 					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $key['id']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="capth"><?php echo $key['capt']; ?></a><br/>			
 					<p class="mess"><?php echo $mess_out; ?></p>	
 					<?php if (strlen($key['message']) > 150): ?>

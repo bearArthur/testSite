@@ -3,7 +3,7 @@
 		$pdo = db_connect();	
 		$email = $_POST['log_email'];
 		$pass = md5($_POST['log_pass']);			
-		$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE users.email = '$email' and users.password = '$pass'");
+		$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE `users`.`email` = '$email' and `users`.`password` = '$pass' and `users`.`id` = `users_data`.`id`");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();		
 		if (!empty($db_data)) {
@@ -82,6 +82,7 @@
 			$_SESSION['id_page'] = $db_data->id;
 			$_SESSION['id'] = $db_data->id;
 			$_SESSION['page'] = 1;
+			$_SESSION['admin'] = false;
 			$sql_query = $pdo -> prepare("INSERT INTO users_data (id,last_login,registered) VALUES ({$db_data->id},NOW(),NOW())");
 			$sql_query -> execute();	
 			$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE users.id = {$_SESSION['id']} and users_data.id = {$_SESSION['id']}");

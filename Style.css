@@ -24,6 +24,19 @@ body{
 	z-index: 3;
 	margin-bottom: 0px;
 	border-bottom: 5px solid white;
+	text-align: center;	
+}
+#menu_b{
+	background-color: black;
+	height: 100%;
+	position: relative;
+	width: auto;
+	vertical-align: middle;
+	display: inline-block;
+	padding: 0px;
+	margin: 0 auto;
+	text-align: center;	
+	z-index: 3;
 }
 #menu div{
 	height: 7%;
@@ -65,6 +78,7 @@ body{
 	background-color: white;
 	min-height: 93%;
 	vertical-align: top;
+	text-align: center;
 	width: 30%; 
 }
 #content{
@@ -95,14 +109,14 @@ body{
 	width: auto;
 	height: auto;
 	text-align: center;
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-bottom: 0px;
 	border-bottom: 1px solid lightgrey;
 }
 #send{
 	width:auto;
 	height: auto;
-	margin-bottom: 0px;
+	margin-bottom: 5px;
 	border-bottom: 1px solid lightgrey;
 }
 #edit{
@@ -165,6 +179,20 @@ p.headd{
 	height: auto;
 	margin: 0px;
 	margin-bottom: 10px;
+}
+p.headd1{
+	position: relative;
+	color: white;
+	background-color: rgb(129,195,252);
+	text-indent: 20px;
+	font-weight: bold;
+	font-size: 10pt;
+	text-align: left;
+	padding: 2px;
+	width: auto;
+	height: auto;
+	margin: 0px;
+	margin-bottom: 0px;
 }
 #send p.headd{
 	position: relative;
@@ -281,18 +309,21 @@ p.head_edit{
 #menu button{
 	background: linear-gradient(to bottom,rgb(54,157,247),rgb(47,102,267));;
 	border:none;
-	width:auto;
-	float: right;
+	width:150px;
 	height:100%;
 	text-align: center;
 	color: white;
-	float:right;
-	font-size: 14pt;
-	margin-right: 2px;
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	margin: 0px;
+	margin-left: -4px;
+	font-size: 12pt;
 }
 #menu button:hover{
-	box-shadow: 0 0 4px lightgrey;
 	cursor: pointer;	
+	box-shadow: 0 0 4px lightgrey;
+	z-index: 5;
 }
 #menu button:active{
 	box-shadow: 0 0 4px lightgrey;
@@ -301,17 +332,20 @@ p.head_edit{
 	background: linear-gradient(to bottom,rgb(54,157,247),rgb(47,102,267));;
 	border:none;
 	width:45px;
-	float: right;
 	height:100%;
+	position: relative;
 	text-align: center;
+	display: inline-block;
 	color: white;
-	float:right;
+	vertical-align: top;
 	font-size: 14pt;
-	margin-right: 2px;
+	margin-left: -4px;
+	box-shadow: none;
 }
 #menu button.pic:hover{
-	box-shadow: 0 0 4px lightgrey;
 	cursor: pointer;	
+	box-shadow: 0 0 4px lightgrey;
+	z-index: 5;
 }
 #menu button.pic:active{
 	box-shadow: 0 0 4px lightgrey;
@@ -498,6 +532,34 @@ img.mess{
   background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
   box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
+button.adm_b{
+	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+	text-align:middle;	
+  color: rgb(68,68,68);
+	margin-top: 5px;
+	padding:3px;
+	width:100px;
+	float: right;
+	margin-right: 5px; 
+	color: black;
+	margin-bottom: 10px;
+	padding-left:10px;
+  border: 1px solid rgba(0,0,0,.1);
+	padding-right:5px;
+	z-index: 5;
+}
+button.adm_b:hover{
+  border: 1px solid rgb(198,198,198);
+  cursor: pointer;
+  background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+button.adm_b:active{
+  color: rgb(51,51,51);
+  border: 1px solid rgb(204,204,204);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+  background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
+}
 #info button:active{
   color: rgb(51,51,51);
   border: 1px solid rgb(204,204,204);
@@ -559,7 +621,8 @@ button.mess:active{
 }
 #info img{
 	position: relative;
-	width: 98%;
+	max-width: 98%;
+	max-height: 400px;
 	margin-top: 5px;
 	overflow: hidden;
 }
@@ -651,12 +714,20 @@ a.head {
 	font-size: 10pt;
 	text-align: left;
 	padding: 2px;
-	width: 75%;
+	width: 30%;
 	height: auto;
 	left: 24%;
-	z-index: 4;	
 }
 div.users {
+	border-bottom: 1px solid lightgrey;
+	margin-bottom: 0px;
+	margin-top: 10px;
+	width: auto;
+	height: auto;	
+	position: relative;
+	padding: 0px;
+}
+form.users {
 	border-bottom: 1px solid lightgrey;
 	margin-bottom: 0px;
 	margin-top: 10px;
@@ -701,10 +772,25 @@ input {
 	padding: 2px;
 	border: 1px solid lightgrey;
 }
-.lang {
+.lang2 {
 	height: 40%;
-	margin-left: 10px;
+	position: absolute;
+	margin-right: 10px;
 	width: 40px;
+	right: 0px;
+	margin-top: 12px;
+	z-index: 3;
+	vertical-align: middle;
+}
+.lang1{
+	height: 40%;
+	position: absolute;
+	margin-right: 10px;
+	width: 40px;
+	right: 50px;
+	margin-top: 12px;
+	z-index: 3;
+	vertical-align: middle;
 }
 .ban_error {
 	position: relative;
