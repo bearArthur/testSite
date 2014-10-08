@@ -11,42 +11,31 @@
 		return $pdo;
 	}
 
-	function message_in($id_page){
+	function message_in(){
 		$message = htmlspecialchars($_POST['send_mess']);
 		$message = nl2br($message);
 		$capt = substr(htmlspecialchars($_POST['send_capt']),0,50);
 		$pdo = db_connect();
-		echo $id_page;
 		$sql_query = $pdo -> prepare("INSERT INTO messages(id_page,id_user,message,capt,date) VALUES (?,?,?,?,NOW())");
-		$db_data = array($id_page,$_SESSION['id'],$message,$capt);
+		$db_data = array($_SESSION['id_page'],$_SESSION['id'],$message,$capt);
 		$sql_query -> execute($db_data);
 		unset($pdo,$message,$sql_query,$db_data);
 		return 0;
 	}
 
-	function message_out($count,$id_page){	
+	function message_out($count){	
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message,messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$id_page} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+		$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message,messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
 		$sql_query -> execute();
 		$db_data = $sql_query -> fetchAll();
 		unset($pdo,$sql_query);
 		return $db_data;
 	}	
 
-	function message_del(){
+	function message_del($id){
 		$pdo = db_connect();
-		$id = $_POST['mess_ok'];
-		$sql_query = $pdo -> prepare("SELECT id_page,id_user FROM messages WHERE id = {$id}");
+		$sql_query = $pdo -> prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
 		$sql_query -> execute();
-		$db_data = $sql_query -> fetchobject();
-		if ($db_data->id_page == $_SESSION['id']) {
-			$sql_query = $pdo -> prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
-			$sql_query -> execute();
-		}
-		elseif ($db_data->id_user == $_SESSION['id']) {
-			$sql_query = $pdo -> prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
-			$sql_query -> execute();
-		}
 		return 0;
 	}
 
@@ -60,7 +49,12 @@
 
 	function get_users() {
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("SELECT * FROM users, users_data WHERE users.id = users_data.id ");
+		if (isset($_SESSION['id'])) {
+			$sql_query = $pdo -> prepare("SELECT * FROM users, users_data WHERE users.id = users_data.id and users.id != {$_SESSION['id']}");
+		}
+		else {
+			$sql_query = $pdo -> prepare("SELECT * FROM users, users_data WHERE users.id = users_data.id");
+		}
 		$sql_query -> execute();
 		$db_data = $sql_query -> fetchall();
 		return $db_data;
@@ -96,10 +90,10 @@
 				if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
 					$pdo = db_connect();
 					$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
-					$db_data = array($_SESSION['id'],$path);
+					$db_data = array($_SESSION['id_page'],$path);
 					$sql_query -> execute($db_data);	
 					$db_data = 'images/users/'.$name;
-					$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id']}");
+					$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
 					$sql_query -> execute();
 				}						
 		}
@@ -109,7 +103,7 @@
 
 	function get_message($id_mess) {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT `messages`.`message`,`messages`.`id`,`messages`.`id_user`,`date`,`photo`,`messages`.`capt`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `messages`.`id_user` = `users_data`.id and `users`.`id` = `messages`.`id_user`");
+		$sql_query = $pdo->prepare("SELECT `messages`.`message`,`messages`.`id`,`messages`.`id_user`,`messages`.`id_page` ,`date`,`photo`,`messages`.`capt`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `messages`.`id_user` = `users_data`.id and `users`.`id` = `messages`.`id_user`");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
 		return $db_data;
@@ -141,40 +135,40 @@
 		}
 	}
 
-	function user_check_a($id) {
-		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("SELECT id FROM admin WHERE id = {$id}");
-		$sql_query->execute();
-		$db_data = $sql_query->fetchall();
-		if ($db_data) {
-			unset($pdo,$sql_query);
-			return true;
-		}
-		else {
-			unset($pdo,$sql_query);
-			return false;
-		}
-	}
+	// function user_check_a($id) {
+	// 	$pdo = db_connect();
+	// 	$sql_query = $pdo -> prepare("SELECT id FROM admin WHERE id = {$id}");
+	// 	$sql_query->execute();
+	// 	$db_data = $sql_query->fetchall();
+	// 	if ($db_data) {
+	// 		unset($pdo,$sql_query);
+	// 		return true;
+	// 	}
+	// 	else {
+	// 		unset($pdo,$sql_query);
+	// 		return false;
+	// 	}
+	// }
 
-	function unlock_user($id) {
+	function unlock_user() {
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("DELETE FROM ban_list WHERE id = {$id}");
-		$sql_query->execute();
-		unset($pdo,$sql_query);
-		return 0;
-	}
-
-	function lock_user($id) {
-		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("INSERT INTO ban_list (id) VALUES ({$id})");
+		$sql_query = $pdo -> prepare("DELETE FROM ban_list WHERE id = {$_SESSION['id_page']}");
 		$sql_query->execute();
 		unset($pdo,$sql_query);
 		return 0;
 	}
 
-	function get_page_data($id_page) {
+	function lock_user() {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE users.id = {$id_page} and users_data.id = {$id_page}");
+		$sql_query = $pdo -> prepare("INSERT INTO ban_list (id) VALUES ({$_SESSION['id_page']})");
+		$sql_query->execute();
+		unset($pdo,$sql_query);
+		return 0;
+	}
+
+	function get_page_data($id) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE users.id = {$id} and users_data.id = {$id}");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
 		if (!empty($db_data)) {
@@ -185,6 +179,7 @@
   		$_SESSION['registered'] = $db_data->registered;
   		$_SESSION['email'] = $db_data->email;
   		$_SESSION['login'] = $db_data->login;
+  		$_SESSION['user_role'] = $db_data->role;
   	}
   	unset($pdo,$sql_query,$db_data);
   	return 0;
@@ -207,6 +202,15 @@
 		$sql_query -> execute();
   	unset($pdo,$sql_query,$name,$surname,$id);		
   	return 0;
+	}
+
+	function change_role() {
+		$id = $_GET['id'];
+		$role = $_POST['user_role'];
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("UPDATE users SET role = {$role} WHERE id = {$id}");
+		$sql_query->execute();
+		return 0;
 	}
 
 	function change_email($text) {

@@ -2,12 +2,13 @@
 	function log_in ($text) {
 		$pdo = db_connect();	
 		$email = $_POST['log_email'];
+		$_SESSION['log_email'] = $_POST['log_email'];
 		$pass = md5($_POST['log_pass']);			
-		$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE `users`.`email` = '$email' and `users`.`password` = '$pass' and `users`.`id` = `users_data`.`id`");
+		$sql_query = $pdo->prepare("SELECT * FROM users, users_data WHERE `users`.`email` = '$email' and `users`.`password` = '$pass' and `users`.`id` = `users_data`.`id`");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();		
 		if (!empty($db_data)) {
-			$sql_query = $pdo -> prepare("SELECT id FROM ban_list WHERE id = {$db_data->id}");
+			$sql_query = $pdo->prepare("SELECT id FROM ban_list WHERE id = {$db_data->id}");
 			$sql_query->execute();
 			$db_data_c = $sql_query->fetchobject();
 			if ($db_data_c == NULL) {
@@ -17,18 +18,11 @@
 	  		$_SESSION['last_login'] = $db_data->last_login;
 	  		$_SESSION['registered'] = $db_data->registered;
 	  		$_SESSION['email'] = $db_data->email;
-				$sql_query = $pdo->prepare("SELECT id FROM admin WHERE id = {$_SESSION['id']}");
+				$_SESSION['role'] = $db_data->role;
+				$_SESSION['user_role'] = $db_data->role;;
+				$sql_query = $pdo->prepare("UPDATE users_data SET last_login = NOW()");
 				$sql_query->execute();
-				$db_data_c = $sql_query->fetchobject();
-				if ($db_data_c != NULL) {
-					$_SESSION['admin'] = true;
-				}
-				else {
-					$_SESSION['admin'] = false;
-				}
-				$sql_query = $pdo -> prepare("UPDATE users_data SET last_login = NOW()");
-				$sql_query->execute();
-				unset($pdo,$sql_query,$login,$pass,$db_data,$db_data_c);
+				unset($pdo, $sql_query, $login,$pass,$db_data,$db_data_c);
 				return '';
 			}
 			else {
@@ -56,6 +50,8 @@
 		$email = $_POST['reg_email'];
 		$pass = $_POST['reg_pass'];
 		$rpass = $_POST['reg_rpass'];
+		$_SESSION['reg_login'] = $_POST['reg_login'];
+		$_SESSION['reg_email'] = $_POST['reg_email'];
 		$sql_query = $pdo -> prepare("SELECT login, email FROM users WHERE login = '$login' or email = '$email'"); 
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
@@ -73,7 +69,7 @@
 		}
 		else {
 			$pass = md5($pass);
-			$sql_query = $pdo -> prepare("INSERT INTO users (login,password,email) VALUES (?,?,?)");
+			$sql_query = $pdo -> prepare("INSERT INTO users (login,password,email,role) VALUES (?,?,?,1)");
 			$db_data = array($login,$pass,$email);
 			$sql_query -> execute($db_data);
 			$sql_query = $pdo -> prepare("SELECT id FROM users WHERE login = '$login'");
@@ -82,7 +78,8 @@
 			$_SESSION['id_page'] = $db_data->id;
 			$_SESSION['id'] = $db_data->id;
 			$_SESSION['page'] = 1;
-			$_SESSION['admin'] = false;
+			$_SESSION['role'] = 1;
+			$_SESSION['user_role'] = 1;
 			$sql_query = $pdo -> prepare("INSERT INTO users_data (id,last_login,registered) VALUES ({$db_data->id},NOW(),NOW())");
 			$sql_query -> execute();	
 			$sql_query = $pdo->prepare("SELECT * FROM users,users_data WHERE users.id = {$_SESSION['id']} and users_data.id = {$_SESSION['id']}");
@@ -97,9 +94,7 @@
 	}
 
 	function log_out () {
-		$lg = $_SESSION['lang'];
-		session_destroy();
-		header("Location: index.php");
-		return 0;
+		unset($_SESSION['id'], $_SESSION['id_page'], $_SESSION['name'], $_SESSION['surname'], $_SESSION['role'], $_SESSION['user_role']);
+		return $lg;
 	}	
 ?>

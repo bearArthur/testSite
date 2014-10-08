@@ -3,44 +3,43 @@
 	mb_internal_encoding("UTF-8");
 	include('db.php');
 	include('log_reg.php');
-	if (!isset($_GET['lg'])) {
-		if (isset($_GET['home'])) {
-			if ($_SESSION['lang']) {
-				$_SESSION['link'] = "index.php?home=login&";
+	if (!isset($_GET['lg']) && !isset($_GET['id']) && !isset($_GET['home'])) {
+		if (isset($_SESSION['id'])) {
+			if (isset($_SESSION['lang'])) {
+				$_SESSION['link'] = "index.php?id={$_SESSION['id']}&";
 				header("Location: {$_SESSION['link']}lg={$_SESSION['lang']}");
 			}
 			else {
-				$_SESSION['link'] = "index.php?home=login&";
+				$_SESSION['link'] = "index.php?id={$_SESSION['id']}&";
 				header("Location: {$_SESSION['link']}lg=ua");
 			}
 		}
-		else{
-			if ($_SESSION['lang']) {
+		else {
+			if (isset($_SESSION['lang'])) {
 				$_SESSION['link'] = "index.php?";
-				header("Location: {$_SESSION['link']}lg={$_SESSION['lang']}");
+				header("Location:  {$_SESSION['link']}lg={$_SESSION['lang']}");
 			}
 			else {
 				$_SESSION['link'] = "index.php?";
-				header("Location: {$_SESSION['link']}lg=ua");
+				header("Location:  {$_SESSION['link']}lg=ua");
 			}
 		}
-	}
-	if (isset($_SESSION['id'])) {
-		get_page_data($_SESSION['id']);
 	}
 	$_SESSION['lang'] = $_GET['lg'];
 	$text = parse_ini_file($_SESSION['lang'].".ini");
 	$error_r = '';
 	$error_l = '';	
-	if(isset($_POST['reg_ok'])){
+	if (isset($_POST['reg_ok'])) {
 		$error_r = register($text);
 		if ($error_r == $text['r_access']) {	
+			unset($_SESSION['reg_login'], $_SESSION['reg_email']);
 			header("Location: user.php");	
 		}
 	}
-	if(isset($_POST['log_ok'])){
+	if (isset($_POST['log_ok'])) {
 		$error_l = log_in($text);	
-		if ($error_l == '') {					
+		if ($error_l == '') {		
+			unset($_SESSION['log_email']);			
 			header("Location: user.php");		
 		}		
 	}
@@ -50,24 +49,42 @@
 		}
 		else {			
 			log_out();
+			header("Location: index.php?home=login&lg={$_SESSION['lang']}");
 		}
 	}
 	if (isset($_POST['home'])) {
-		header("Location: index.php?lg={$_SESSION['lang']}");
+		header("Location: index.php");
 	}
 	if (isset($_POST['profile'])) {
-		header("Location: user.php?id={$_SESSION['id']}&page=1&lg={$_SESSION['lang']}");
+		header("Location: user.php");
 	}
 	if (isset($_POST['tools'])) {
+		$_SESSION['id_page'] = $_SESSION['id'];
 		header("Location: tools.php");
 	}	
 	if (isset($_POST['edit_user'])) {
-		header("Location: tools.php?id={$_POST['edit_user']}&lg={$_SESSION['lang']}");
+		$_SESSION['id_page'] = $_POST['edit_user'];
+		header("Location: tools.php?id={$_SESSION['id_page']}&lg={$_SESSION['lang']}");
 	}	
-	if (isset($_POST['delete_user'])) {
-		delete_user($_POST['delete_user']);
+	if (isset($_POST['delete_user'])):
+	$_SESSION['delete_id'] = $_POST['delete_user'];
+?>
+	<form class="check" method="POST" action="<?php echo $_SESSION['link']; ?>lg=<?php echo $_SESSION['lang']; ?>">
+	<p class="check_mess"><?php echo $text['check_user']; ?></p>
+	<button type="submit" name="del_no" class="check_b"><?php echo $text['not']; ?></button>
+	<button type="submit" name="del_ok" class="check_b"><?php echo $text['ok']; ?></button>
+	</form>
+<?php
+	endif;
+	if (isset($_SESSION['id'])) {
+		get_page_data($_SESSION['id']);
+	}	
+	if (isset($_POST['del_ok'])) {
+		delete_user($_SESSION['delete_id']);
 	}
-	
+	if (isset($_POST['del_no'])){
+		header("Location: {$_SESSION['link']}&lg={$_SESSION['lang']}");
+	}
 ?>
 
 <!DOCTYPE HTML5>
@@ -88,8 +105,11 @@
 				<form method="POST" action="<?php echo $_SESSION['link']; ?>lg=<?php echo $_SESSION['lang']; ?>" id="menu_b">
 					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
 					<?php if (isset($_SESSION['id'])): ?>
-						<button type="submit" name="profile"><?php echo $text['profile']; ?></button>
-						<button type="submit" name="tools"><?php echo $text['tools']; ?></button>
+						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
+						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
+					<?php elseif (!isset($_SESSION['id'])): ?>
+						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>
+						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 						<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
 				</form>
@@ -107,25 +127,36 @@
 					<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
 					<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 					<table>
-					<?php if (isset($_SESSION['id'])): ?>
+					<?php if (isset($_SESSION['id']) && ($_SESSION['name']) && ($_SESSION['surname'])): ?>
 						<tr>
-							<td><p><?php echo $text['email']; ?></p></td>
-							<td><p><?php echo $_SESSION['email']; ?></p></td>
+							<td><p class="info_user_b"><?php echo $text['name']; ?></p></td>
+							<td><p class="info_user"><?php echo $_SESSION['name']; ?></p></td>
+						</tr>
+						<tr>
+							<td><p class="info_user_b"><?php echo $text['surname']; ?></p></td>
+							<td><p class="info_user"><?php echo $_SESSION['surname']; ?></p></td>
+						</tr>
+					<?php 
+						endif;
+						if (isset($_SESSION['id'])):
+					?>
+						<tr>
+							<td><p class="info_user_b"><?php echo $text['email']; ?></p></td>
+							<td><p class="info_user"><?php echo $_SESSION['email']; ?></p></td>
 						</tr>
 					<?php endif; ?>
 					<tr>
-						<td><p><?php echo $text['date_reg']; ?></p></td>
-						<td><p><?php echo $_SESSION['registered']; ?></p></td>
+						<td><p class="info_user_b"><?php echo $text['date_reg']; ?></p></td>
+						<td><p class="info_user"><?php echo $_SESSION['registered']; ?></p></td>
 					</tr>
 					<tr>
-						<td><p><?php echo $text['date_log']; ?></p></td>
-						<td><p><?php echo $_SESSION['last_login']; ?></p></td>
+						<td><p class="info_user_b"><?php echo $text['date_log']; ?></p></td>
+						<td><p class="info_user"><?php echo $_SESSION['last_login']; ?></p></td>
 					</tr>
 				</table>
 				<?php elseif (!isset($_SESSION['id'])): ?>
 					<img src="images/users/none.jpg"></img></br>
-					<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1" class="name"><?php echo $text['login']; ?></a>					
-					<p><?php echo $text['info']; ?></p>
+					<a href="index.php" class="name"><?php echo $text['gest']; ?></a>		
 				<?php endif; ?>			
 			</div>
 		
@@ -138,11 +169,11 @@
 						<table>
 							<tr>
 								<td> <p><?php echo $text['login']; ?></p> </td>
-								<td> <input type="text" name="reg_login" /required> </td>
+								<td> <input type="text" name="reg_login" value="<?php if (isset($_SESSION['reg_login'])) {echo $_SESSION['reg_login'];} ?>" /required></td>
 							</tr>
 							<tr>
 								<td> <p><?php echo $text['email']; ?></p> </td>
-								<td> <input type="text" name="reg_email" /required> </td>
+								<td> <input type="text" name="reg_email" value="<?php if (isset($_SESSION['reg_login'])) {echo $_SESSION['reg_email'];} ?>" /required></td>
 							</tr>
 							<tr>
 								<td> <p><?php echo $text['pass']; ?></p> </td>
@@ -164,7 +195,7 @@
 						<table>
 							<tr>
 								<td> <p><?php echo $text['email']; ?></p> </td>
-								<td> <input type="text" name="log_email" /required> </td>
+								<td> <input type="text" name="log_email" value="<?php if (isset($_SESSION['log_email'])) {echo $_SESSION['log_email'];} ?>" /required> </td>
 							</tr>
 							<tr>
 								<td> <p><?php echo $text['pass']; ?></p> </td>
@@ -182,15 +213,15 @@
 					<p class="headd"><?php echo $text['users']; ?></p>
 
 					<?php 
-						if (isset($_SESSION['id']) && $_SESSION['admin'] == true):
+						if (isset($_SESSION['id']) && $_SESSION['role'] == 3):
 						$db_data = get_users();
 						foreach ($db_data as $key):
 					?>	
-						<form method="POST" action="index.php?home=login&lg=<?php echo $_SESSION['lang']; ?>" class="users">		
+						<form method="POST" action="<?php echo $_SESSION['link']; ?>lg=<?php echo $_SESSION['lang']; ?>" class="users">		
 							<img src="<?php echo $key['photo']; ?>" class="users"></img>	
 							<a href="user.php?id=<?php echo $key['id']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="head"><?php echo $key['login']; ?></a>
-							<button class="adm_b" name="edit_user" value="<?php echo $key['id']; ?>" type="submit" ><?php echo $text['edit']; ?></button>
-							<button class="adm_b" name="delete_user" value="<?php echo $key['id']; ?>" type="submit"><?php echo $text['delete']; ?></button>	
+							<button class="mess_b" name="delete_user" value="<?php echo $key['id']; ?>" type="submit">x</button>	
+							<button class="mess_b" name="edit_user" value="<?php echo $key['id']; ?>" type="submit" >!</button>
 						</form>		
 					<?php
 						endforeach;

@@ -166,6 +166,68 @@ li{
 	position: relative;
 	margin-right: 20px;
 }
+p.no_message {	
+	font-size: 10pt;
+	text-indent: 20px;
+	padding-bottom: 10px;
+	margin-bottom: 0px;
+	border-bottom: 1px solid lightgrey;
+}
+.check {
+	position: fixed;
+	vertical-align: middle;
+	background-color: white;
+	border: 1px solid lightgrey;
+	width: 20%;
+	height: 20%;
+	z-index: 10;
+	left:40%;
+	top: 40%;
+	box-shadow: 0 0 10px 1px grey;
+	padding: 3px;
+}
+p.info_user_b {
+	font-size: 10pt;
+	color: rgb(129,195,252);
+}
+p.info_user {
+	font-size: 10pt;
+	color: black
+}
+p.check_mess {
+	text-indent: 20px;
+	position: relative;
+	left: 10px;
+	width: 90%;
+}
+button.check_b{
+	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+	text-align:middle;	
+  color: rgb(68,68,68);
+	margin-top: 5px;
+	padding:3px;
+	width:40%;
+	left: 9%;
+	top:10%;
+	position: relative;
+	color: black;
+	margin-bottom: 10px;
+	padding-left:10px;
+  border: 1px solid rgba(0,0,0,.1);
+	padding-right:5px;
+}
+button.check_b:hover{
+  border: 1px solid rgb(198,198,198);
+  cursor: pointer;
+  background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+button.check_b:active{
+  color: rgb(51,51,51);
+  border: 1px solid rgb(204,204,204);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+  background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
+}
 p.headd{
 	position: relative;
 	color: white;
@@ -349,6 +411,11 @@ p.head_edit{
 }
 #menu button.pic:active{
 	box-shadow: 0 0 4px lightgrey;
+}
+#menu button.pic:disabled:hover{
+	cursor: default;	
+	box-shadow: none;
+	z-index: 5;
 }
 #register p{
 	font-size: 10pt;
