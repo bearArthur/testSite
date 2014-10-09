@@ -11,15 +11,15 @@
 		return $pdo;
 	}
 
-	function message_in(){
+	function message_in($id_page, $id_user){
 		$message = htmlspecialchars($_POST['send_mess']);
 		$message = nl2br($message);
-		$capt = substr(htmlspecialchars($_POST['send_capt']),0,50);
+		$capt = substr(htmlspecialchars($_POST['send_capt']), 0, 100);
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("INSERT INTO messages(id_page,id_user,message,capt,date) VALUES (?,?,?,?,NOW())");
-		$db_data = array($_SESSION['id_page'],$_SESSION['id'],$message,$capt);
-		$sql_query -> execute($db_data);
-		unset($pdo,$message,$sql_query,$db_data);
+		$sql_query = $pdo->prepare("INSERT INTO messages(id_page, id_user, message, capt, date) VALUES (?, ?, ?, ?, NOW())");
+		$db_data = array($id_page, $id_user, $message, $capt);
+		$sql_query->execute($db_data);
+		unset($pdo, $message, $sql_query, $db_data);
 		return 0;
 	}
 
@@ -34,8 +34,8 @@
 
 	function message_del($id){
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
-		$sql_query -> execute();
+		$sql_query = $pdo->prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
+		$sql_query->execute();
 		return 0;
 	}
 
@@ -80,22 +80,29 @@
 		return $string.$format;
 	}
 
-	function upload_image() {
+	function upload_image($id) {
+		$pdo = db_connect();
 		$path = $_FILES['userfile']['name'];
 		$pos = strrpos($path,'.');
 		$format = substr($path,$pos);
-		if ($_FILES['userfile']['size'] <= 1024*1024*10) {
-				$name = gen_name($format);
-				$path = '/var/www/html/test/testSite/images/users/'.$name;
-				if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
-					$pdo = db_connect();
-					$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
-					$db_data = array($_SESSION['id_page'],$path);
-					$sql_query -> execute($db_data);	
-					$db_data = 'images/users/'.$name;
-					$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
-					$sql_query -> execute();
-				}						
+		$pass = md5($_POST['ti_pass']);
+		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
+		$sql_query -> execute();
+		$db_data = $sql_query->fetchobject();
+		if ($pass == $db_data->password) {
+			if ($_FILES['userfile']['size'] <= 1024*1024*10) {
+					$name = gen_name($format);
+					$path = '/var/www/html/test/testSite/images/users/'.$name;
+					if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
+						$pdo = db_connect();
+						$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
+						$db_data = array($_SESSION['id_page'],$path);
+						$sql_query -> execute($db_data);	
+						$db_data = 'images/users/'.$name;
+						$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
+						$sql_query -> execute();
+					}						
+			}
 		}
 		unset($pdo,$sql_query,$db_data,$path,$pos,$format);
 		return 0;
@@ -103,7 +110,7 @@
 
 	function get_message($id_mess) {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT `messages`.`message`,`messages`.`id`,`messages`.`id_user`,`messages`.`id_page` ,`date`,`photo`,`messages`.`capt`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `messages`.`id_user` = `users_data`.id and `users`.`id` = `messages`.`id_user`");
+		$sql_query = $pdo->prepare("SELECT `messages`.`message`,`messages`.`id`,`messages`.`id_user`,`messages`.`id_page` ,`date`,`photo`,`messages`.`capt`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `users_data`.id = `messages`.`id_user` and `users`.`id` = `messages`.`id_user`");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
 		return $db_data;
@@ -114,7 +121,7 @@
 		$pdo = db_connect();
 		$message = htmlspecialchars($message);
 		$message = nl2br($message);
-		$capt = substr(htmlspecialchars($capt),0,50);
+		$capt = substr(htmlspecialchars($capt),0,10);
 		$sql_query = $pdo->prepare("UPDATE messages SET message = '{$message}', capt = '{$capt}' WHERE id = {$id_mess}");
 		$sql_query->execute();
 		return 0;
@@ -135,34 +142,19 @@
 		}
 	}
 
-	// function user_check_a($id) {
-	// 	$pdo = db_connect();
-	// 	$sql_query = $pdo -> prepare("SELECT id FROM admin WHERE id = {$id}");
-	// 	$sql_query->execute();
-	// 	$db_data = $sql_query->fetchall();
-	// 	if ($db_data) {
-	// 		unset($pdo,$sql_query);
-	// 		return true;
-	// 	}
-	// 	else {
-	// 		unset($pdo,$sql_query);
-	// 		return false;
-	// 	}
-	// }
-
-	function unlock_user() {
+	function unlock_user($id_page) {
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("DELETE FROM ban_list WHERE id = {$_SESSION['id_page']}");
+		$sql_query = $pdo->prepare("DELETE FROM ban_list WHERE id = {$id_page}");
 		$sql_query->execute();
-		unset($pdo,$sql_query);
+		unset($pdo, $sql_query, $id_page);
 		return 0;
 	}
 
-	function lock_user() {
+	function lock_user($id_page) {
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("INSERT INTO ban_list (id) VALUES ({$_SESSION['id_page']})");
+		$sql_query = $pdo->prepare("INSERT INTO ban_list (id) VALUES ({$id_page})");
 		$sql_query->execute();
-		unset($pdo,$sql_query);
+		unset($pdo, $sql_query, $id_page);
 		return 0;
 	}
 
@@ -185,27 +177,23 @@
   	return 0;
 	}
 
-	function change_name_surname() {
+	function change_name_surname($id) {
 		$pdo = db_connect();
-		$surname = $_POST['t_surname'];
-		$name = $_POST['t_name'];
-		$id = $_GET['id'];
-		if ($_POST['t_name'] =='' && $_POST['t_surname'] !='') {
-			$sql_query = $pdo -> prepare("UPDATE users_data SET surname = '{$surname}' WHERE id = {$id}");
-		}
-		elseif ($_POST['t_name'] !='' && $_POST['t_surname'] =='') {
-			$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}' WHERE id = {$id}");			
-		}
-		else {
-			$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}', surname = '{$surname}' WHERE id = {$id}");				
-		}
+		$surname = htmlspecialchars($_POST['t_surname']);
+		$name = htmlspecialchars($_POST['t_name']);		
+		$pass = md5($_POST['tns_pass']);
+		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
 		$sql_query -> execute();
+		$db_data = $sql_query->fetchobject();
+		if ($pass == $db_data->password) {
+			$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}', surname = '{$surname}' WHERE id = {$id}");	
+			$sql_query -> execute();
+		}
   	unset($pdo,$sql_query,$name,$surname,$id);		
   	return 0;
 	}
 
-	function change_role() {
-		$id = $_GET['id'];
+	function change_role($id) {
 		$role = $_POST['user_role'];
 		$pdo = db_connect();
 		$sql_query = $pdo->prepare("UPDATE users SET role = {$role} WHERE id = {$id}");
@@ -213,11 +201,11 @@
 		return 0;
 	}
 
-	function change_email($text) {
+	function change_email($text, $id) {
 		$pdo = db_connect();
-		$email = $_POST['t_email'];
+		$email = htmlspecialchars($_POST['t_email']);
 		$pass = md5($_POST['t_epass']);
-		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$_GET['id']}");
+		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
 		$sql_query -> execute();
 		$db_data = $sql_query->fetchobject();
 		if (!preg_match("^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$^",$email)) {
@@ -231,25 +219,81 @@
 			return '';
 	}
 
-	function change_pass($text) {
+	function change_pass($text, $id) {
 		$pdo = db_connect();
-		$npass = $_POST['t_npass'];
+		$npass = ($_POST['t_npass']);
 		$rpass = $_POST['t_rpass'];
-		$pass = $_POST['t_pass'];
+		$pass = htmlspecialchars($_POST['t_pass']);
 		if ($npass != $rpass) {
 			return $text['r_pass_er'];
 		}
 		$npass = md5($npass);
 		$pass = md5($pass);
-		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$_GET['id']}");
+		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
 		if ($pass != $db_data->password) {
 			return $text['er_pass'];
 		}
-		$sql_query = $pdo -> prepare("UPDATE users SET password = '{$npass}' WHERE id = {$_GET['id']}");
+		$sql_query = $pdo -> prepare("UPDATE users SET password = '{$npass}' WHERE id = {$id}");
 		$sql_query->execute();
 		return '';
+	}
+
+function change_name_surname_a($id) {
+		$pdo = db_connect();
+		$surname = htmlspecialchars($_POST['t_surname']);
+		$name = htmlspecialchars($_POST['t_name']);		
+			$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}', surname = '{$surname}' WHERE id = {$id}");	
+			$sql_query -> execute();
+  	unset($pdo,$sql_query,$name,$surname,$id);		
+  	return 0;
+	}
+
+	function change_email_a($text, $id) {
+		$pdo = db_connect();
+		$email = htmlspecialchars($_POST['t_email']);
+		if (!preg_match("^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$^",$email)) {
+			return $text['r_emale_er'];
+		}			
+			$sql_query = $pdo -> prepare("UPDATE users SET email = '{$email}' WHERE id = {$_GET['id']}");
+			$sql_query -> execute();
+			return '';
+	}
+
+	function change_pass_a($text, $id) {
+		$pdo = db_connect();
+		$npass = htmlspecialchars($_POST['t_npass']);
+		$rpass = $_POST['t_rpass'];
+		if ($npass != $rpass) {
+			return $text['r_pass_er'];
+		}
+		$npass = md5($npass);
+		$pass = md5($pass);
+		$sql_query = $pdo -> prepare("UPDATE users SET password = '{$npass}' WHERE id = {$id}");
+		$sql_query->execute();
+		return '';
+	}
+
+	function upload_image_a() {
+		$path = $_FILES['userfile']['name'];
+		$pos = strrpos($path,'.');
+		$format = substr($path,$pos);
+		if ($_FILES['userfile']['size'] <= 1024*1024*10) {
+				$name = gen_name($format);
+				$path = '/var/www/html/test/testSite/images/users/'.$name;
+				if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
+					$pdo = db_connect();
+					$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
+					$db_data = array($_SESSION['id_page'],$path);
+					$sql_query -> execute($db_data);	
+					$db_data = 'images/users/'.$name;
+					$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
+					$sql_query -> execute();
+				}						
+		}
+		unset($pdo,$sql_query,$db_data,$path,$pos,$format);
+		return 0;
 	}
 
 	function delete_user($id_user) {

@@ -10,9 +10,11 @@
 	$nn = $_GET['page'];
 	if (isset($_GET['message'])) {
 		$id_mess = $_GET['message'];
+		$link = "edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&lg={$_GET['lg']}";
 	}
 	elseif (isset($_GET['edit'])) {
 		$id_mess = $_GET['edit'];
+		$link = "edit.php?id={$_GET['id']}&page={$_GET['page']}&edit={$_GET['edit']}&lg={$_GET['lg']}";
 	}
 	get_page_data($id_page);
 
@@ -20,70 +22,33 @@
 	$_SESSION['lang'] = $_GET['lg'];
 	$nn = $_GET['page'];
 	$text = parse_ini_file($_SESSION['lang'].".ini");	
-	if (isset($_POST['del_mess_ok'])) {		
-		message_del($_SESSION['id_mess']);
 
-
-
-
-
-
-
-
-		
-		// header("Location: user.php?id={$id_page}&page={$nn}&lg={$_SESSION['lang']}");
-
-
-
-
-
-
-
-
-
+	if (isset($_POST['mess_del_ok'])) {		
+		message_del($_GET['message']);
+		header("Location: user.php?id={$_GET['id']}&page={$_GET['page']}&lg={$_SESSION['lang']}");
 	}
-	if (isset($_POST['mess_del_no'])) 
 
-
-
-
-
-
-
-
-
-
-
-
-
-		// header("Location: edit.php?id={$_SESSION['id_page']}&page={$nn}&message={$_SESSION['id_mess']}&lg={$_SESSION['lang']}");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	if (isset($_POST['mess_del_no'])) {
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&lg={$_SESSION['lang']}");
 	}
+
 	if (isset($_POST['send_ok'])) {
 		message_update($_GET['edit'], $_POST['send_mess'], $_POST['send_capt']);   
-		header("Location: user.php?id={$_SESSION['id_page']}&page={$nn}&lg={$_SESSION['lang']}");
+		header("Location: user.php?id={$_GET['id']}&page={$nn}&lg={$_SESSION['lang']}");
 	}
+
 	if (isset($_POST['tools'])) {
-		$_SESSION['id_page'] = $_SESSION['id'];
-		header("Location: user.php?id={$_SESSION['id']}&page={$nn}&lg={$_SESSION['lang']}");
+		header("Location: tools.php?id={$_SESSION['id']}&lg={$_GET['lg']}");
 	} 
+
 	if (isset($_POST['mess_ed'])) {
 			header("Location: edit.php?id={$_SESSION['id_page']}&page={$nn}&edit={$_POST['mess_ed']}&lg={$_SESSION['lang']}");
 	}
+
+	if (isset($_POST['profile'])) {
+		header("Location: user.php?id={$_SESSION['id']}&page={$_GET['page']}&lg={$_GET['lg']}");
+	}
+
 	if (isset($_POST['login'])) {
 		if (!$_SESSION['id']) {
 			header("Location: index.php?home=login&lg={$_SESSION['lang']}");
@@ -93,16 +58,19 @@
 			header("Location: index.php?home=login&lg={$_SESSION['lang']}");
 		}
 	}
+
 	if (isset($_POST['home'])) {
 		header("Location: user.php?id={$_SESSION['id']}&page=1&lg={$_SESSION['lang']}");
 	}
+
 	if (isset($_POST['friends'])) {
 		header("Location: users.php?&lg={$_SESSION['lang']}");
 	}
+	
 	if (isset($_POST['mess_ok'])):
 		$_SESSION['id_mess'] = $_POST['mess_ok'];
 ?>
-	<form class="check" method="POST" action="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>">
+	<form class="check" method="POST" action="<?php echo $link; ?>">
 	<p class="check_mess"><?php echo $text['check_mess']; ?></p>
 	<button type="submit" name="mess_del_no" class="check_b"><?php echo $text['not']; ?></button>
 	<button type="submit" name="mess_del_ok" class="check_b"><?php echo $text['ok']; ?></button>
@@ -117,6 +85,7 @@
 
 	<head>
 		<title> <?php echo $_SESSION['name'].' '.$_SESSION['surname']; ?> </title>
+		<link rel="shortcut icon" href="images/pencil.png" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="Style.css">
 		<meta charset="utf8">
 	</head>
@@ -126,13 +95,16 @@
 		<div id="back">
 
 			<div id="menu">
-				<form method="POST" action="user.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="menu_b">			
-					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+				<form method="POST" action="<?php echo $link; ?>" id="menu_b">			
 					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
+					<?php elseif (!isset($_SESSION['id'])): ?>
+						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
+					<?php endif; ?>				
+					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
-						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>
 						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
@@ -148,13 +120,17 @@
 			
 			<div id="info">
 				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
-				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
+				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page={$nn}&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 				<table>
-					<?php if (isset($_SESSION['id']) && ($_SESSION['name']) && ($_SESSION['surname'])): ?>
+					<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
 						<tr>
 							<td><p class="info_user_b"><?php echo $text['name']; ?></p></td>
 							<td><p class="info_user"><?php echo $_SESSION['name']; ?></p></td>
 						</tr>
+					<?php 
+						endif;
+						if (isset($_SESSION['id']) && ($_SESSION['surname'])): 
+					?>
 						<tr>
 							<td><p class="info_user_b"><?php echo $text['surname']; ?></p></td>
 							<td><p class="info_user"><?php echo $_SESSION['surname']; ?></p></td>
@@ -183,9 +159,9 @@
 
 				<?php  
 					if (isset($_GET['edit'])):
-					$message = get_message($id_mess);
+					$message = get_message($_GET['edit']);
 				?>			
-				<form method="POST" action="edit.php?id=<?php echo $id_page; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=<?php echo $_SESSION['lang']; ?>" id="edit">     
+				<form method="POST" action="<?php echo $link; ?>" id="edit">     
 					<p class="headd"><?php echo $text['edit_mess']; ?></p>
 					<img src="<?php echo $message->photo; ?>" class="edit_photo"></img> 
 					<a href="user.php?id=<?php echo $message->id_user; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
@@ -196,9 +172,9 @@
 				</form>   			
 				<?php 
 					elseif (isset($_GET['message'])): 
-					$message = get_message($id_mess);
+					$message = get_message($_GET['message']);
 				?>
-				<form method="POST" action="edit.php?id=<?php echo $_GET['message']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_SESSION['id_mess'] ?>&lg=<?php echo $_SESSION['lang']; ?>" id="edit">   
+				<form method="POST" action="<?php echo $link; ?>" id="edit">   
 					<p class="headd"><?php echo $text['more']; ?></p>
 					<?php 
 						if (isset($_SESSION['id'])): 
