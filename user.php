@@ -16,9 +16,10 @@
 	$_SESSION['id_page'] = $_GET['id'];
 	$_SESSION['lang'] = $_GET['lg'];
 	get_page_data($_GET['id']);
-	$text = parse_ini_file($_GET['lg'].".ini");	
+	$text = get_language($_GET['lg']);	
 	
 	if (isset($_POST['tools'])) {
+		$_SESSION['id_page'] = $_SESSION['id'];
 		header("Location: tools.php?id={$_SESSION['id']}&lg={$_GET['lg']}");
 	}	
 
@@ -80,6 +81,35 @@
 		unset($_SESSION['id_mess']);
 		header("Location: user.php?id={$_GET['id']}&page={$_GET['page']}&lg={$_GET['lg']}");
 	}
+
+	if (isset($_POST['edit_user'])) {
+		$_SESSION['id_page'] = $_POST['edit_user'];
+		header("Location: tools.php?id={$_SESSION['id_page']}&lg={$_GET['lg']}");
+	}	
+
+	if (isset($_POST['delete_user'])):
+	$_SESSION['delete_id'] = $_POST['delete_user'];
+	?>
+		<form class="check" method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>">
+			<p class="check_mess"><?php echo $text['check_user']; ?></p>
+			<button type="submit" name="del_no" class="check_b"><?php echo $text['not']; ?></button>
+			<button type="submit" name="del_ok" class="check_b"><?php echo $text['ok']; ?></button>
+		</form>
+	<?php
+	endif;
+
+	if (isset($_POST['del_ok'])) {
+		delete_user($_SESSION['delete_id']);
+		header("Location: user.php");
+	}
+
+	if (isset($_POST['del_no'])){
+		header("Location: user.php");
+	}
+
+	if (isset($_POST['site_tools'])) {
+		header("Location: edit_page.php");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -99,7 +129,9 @@
 
 			<div id="menu">
 				<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" id="menu_b">	
-					<?php if (isset($_SESSION['id'])): ?>
+					<?php
+						if (isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
 						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
@@ -107,16 +139,25 @@
 					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
 					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
-					<?php elseif (!isset($_SESSION['id'])): ?>
+					<?php	if ($_SESSION['role'] == 3): ?>
+						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+					<?php 
+						endif; 
+						elseif (!isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
 				</form>
 				<a  href="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
-				<a  href="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>				
+				<a  href="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>		
 			</div>
 			
 			<form id="info" method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>">
+				<?php if ($_SESSION['role'] == 3 && $_SESSION['id'] != $_GET['id']): ?>
+					<button class="mess_b" name="edit_user" value="<?php echo $_GET['id']; ?>" type="submit" >!</button>
+					<button class="mess_b_x" name="delete_user" value="<?php echo $_GET['id']; ?>" type="submit">x</button>	</br></br>
+				<?php endif; ?>
 				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
 				<a href="user.php?id=<?php echo $_GET['id']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 				<table>
@@ -153,18 +194,12 @@
 				</table>
 
 				<?php 
-					$check_b = user_check_b($_GET['id']);
-					if ($check_b == true): 
+					if ($_SESSION['user_role'] == 0): 
 				?>
 					<p class="ban_error"><?php echo $text['ban_mess']; ?></p>
 				<?php 
 					endif; 
-					if ((isset($_SESSION['role'])) && ($_SESSION['role'] == 3) && ($_SESSION['id'] != $_GET['id']) && ($check_b == FALSE)): 
 				?>
-					<button name="lock" type="submit"><?php echo $text['ban']; ?></button>
-				<?php elseif ((isset($_SESSION['role'])) && ($_SESSION['role'] == 3) && ($_SESSION['id'] != $_GET['id']) && ($check_b == TRUE)): ?>
-					<button name="unlock" type="submit"><?php echo $text['dis_ban']; ?></button>
-				<?php endif; ?>
 			</form>
 
 			<div id="content">							
@@ -172,15 +207,23 @@
 				<?php if (isset($_SESSION['id']) && $_SESSION['role'] != 1): ?>	
 					<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" id="send">			
 						<p class="headd"><?php echo $text['write_mess']; ?></p>	
+						<p class="info_user_u"><?php echo $text['ukraine']; ?></p>
 						<textarea name="send_capt" rows="1" cols="68" /required></textarea>	
-						<textarea name="send_mess" rows="4" cols="68" /required></textarea>			
+						<textarea name="send_mess" rows="4" cols="68" /required></textarea>		
+						<p class="info_user_u"><?php echo $text['english']; ?></p>
+						<textarea name="send_capt_en" rows="1" cols="68" /required></textarea>	
+						<textarea name="send_mess_en" rows="4" cols="68" /required></textarea>		
 						<button name="send_ok" type="submit"><?php echo $text['send']; ?></button>
 					</form>		
 				<?php elseif (isset($_SESSION['id']) && $_SESSION['role'] == 1 && $_SESSION['id'] == $_GET['id']): ?>
 					<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" id="send">			
 						<p class="headd"><?php echo $text['write_mess']; ?></p>	
+						<p class="info_user_u"><?php echo $text['ukraine']; ?></p>
 						<textarea name="send_capt" rows="1" cols="68" /required></textarea>	
-						<textarea name="send_mess" rows="4" cols="68" /required></textarea>			
+						<textarea name="send_mess" rows="4" cols="68" /required></textarea>	
+						<p class="info_user_u"><?php echo $text['english']; ?></p>
+						<textarea name="send_capt_en" rows="1" cols="68" /required></textarea>	
+						<textarea name="send_mess_en" rows="4" cols="68" /required></textarea>			
 						<button name="send_ok" type="submit"><?php echo $text['send']; ?></button>
 					</form>		
 				<?php endif; ?>

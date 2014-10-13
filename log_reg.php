@@ -8,10 +8,7 @@
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();		
 		if (!empty($db_data)) {
-			$sql_query = $pdo->prepare("SELECT id FROM ban_list WHERE id = {$db_data->id}");
-			$sql_query->execute();
-			$db_data_c = $sql_query->fetchobject();
-			if (!$db_data_c) {
+			if ($db_data->role != 0) {
 				$_SESSION['id_page'] = $db_data->id;
 				$_SESSION['id'] = $db_data->id;
 				$_SESSION['page'] = 1;

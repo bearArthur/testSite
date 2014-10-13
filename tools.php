@@ -11,11 +11,11 @@
 		header("Location: index.php");
 	}
 
-	if ((!isset($_GET['id'])) | (!isset($_GET['lg']))) {
+	if ((empty($_GET['id'])) || (empty($_GET['lg']))) {
 		header("Location: tools.php?id={$_SESSION['id']}&lg={$_SESSION['lang']}");
 	}
 
-	$text = parse_ini_file($_GET['lg'].".ini");
+	$text = get_language($_GET['lg']);	
 	get_page_data($_SESSION['id_page']);
 
 
@@ -95,6 +95,35 @@
 		unlock_user($_GET['id']);
 		header("Location: tools.php?id={$_GET['id']}&lg={$_GET['lg']}");
 	}
+
+	if (isset($_POST['edit_user'])) {
+		$_SESSION['id_page'] = $_POST['edit_user'];
+		header("Location: tools.php?id={$_SESSION['id_page']}&lg={$_GET['lg']}");
+	}	
+
+	if (isset($_POST['delete_user'])):
+	$_SESSION['delete_id'] = $_POST['delete_user'];
+	?>
+		<form class="check" method="POST" action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg']; ?>">
+			<p class="check_mess"><?php echo $text['check_user']; ?></p>
+			<button type="submit" name="del_no" class="check_b"><?php echo $text['not']; ?></button>
+			<button type="submit" name="del_ok" class="check_b"><?php echo $text['ok']; ?></button>
+		</form>
+	<?php
+	endif;
+
+	if (isset($_POST['del_ok'])) {
+		delete_user($_SESSION['delete_id']);
+		header("Location: index.php");
+	}
+
+	if (isset($_POST['del_no'])){
+		header("Location: tools.php?id={$_GET['id']}&lg={$_GET['lg']}");
+	}
+	
+	if (isset($_POST['site_tools'])) {
+		header("Location: edit_page.php");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -114,7 +143,9 @@
 
 			<div id="menu">
 				<form method="POST"  action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg'] ?>" id="menu_b">
-					<?php if (isset($_SESSION['id'])): ?>
+					<?php
+						if (isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
 						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
@@ -122,7 +153,12 @@
 					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
 					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
-					<?php elseif (!isset($_SESSION['id'])): ?>
+					<?php	if ($_SESSION['role'] == 3): ?>
+						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+					<?php 
+						endif; 
+						elseif (!isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
@@ -133,6 +169,10 @@
 
 			
 			<form id="info" method="POST" action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg'] ?>">
+				<?php if ($_SESSION['role'] == 3 && $_SESSION['id'] != $_GET['id']): ?>
+					<button class="mess_b" name="edit_user" value="<?php echo $_GET['id']; ?>" type="submit" >!</button>
+					<button class="mess_b_x" name="delete_user" value="<?php echo $_GET['id']; ?>" type="submit">x</button>	</br>
+				<?php endif; ?>
 				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
 				<a href="user.php?id=<?php echo $_GET['id']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 				<table>
@@ -168,18 +208,12 @@
 					</tr>
 				</table>
 				<?php 
-					$check_b = user_check_b($_GET['id']);
-					if ($check_b == true): 
+					if ($_SESSION['user_role'] == 0): 
 				?>
 					<p class="ban_error"><?php echo $text['ban_mess']; ?></p>
 				<?php 
 					endif; 
-					if ((isset($_SESSION['role'])) && ($_SESSION['role'] == 3) && ($_SESSION['id'] != $_SESSION['id_page']) && ($check_b == FALSE)): 
 				?>
-					<button name="lock" type="submit"><?php echo $text['ban']; ?></button>
-				<?php elseif ((isset($_SESSION['role'])) && ($_SESSION['role'] == 3) && ($_SESSION['id'] != $_SESSION['id_page']) && ($check_b == TRUE)): ?>
-					<button name="unlock" type="submit"><?php echo $text['dis_ban']; ?></button>
-				<?php endif; ?>
 			</form>
 
 			<div id="content">			
@@ -192,12 +226,6 @@
 							<td><p class="tool"><?php echo $text['ch_ava']; ?></p></td>
 							<td><input name="userfile" type="file"></td>
 						</tr>	
-						<?php if ($_SESSION['role'] != 3): ?>		
-							<tr>
-								<td><p class="tool"><?php echo $text['pass']; ?></p></td>
-								<td><input type="password" size="30" name="ti_pass" /required></td>
-							</tr>
-						<?php endif; ?>
 						<tr>
 							<td></td>
 							<td><button class="tool" type="submit" name="up_ok"><?php echo $text['save']; ?></button></td>
@@ -215,12 +243,6 @@
 							<td><p class="tool"><?php echo $text['surname']; ?></p></td>
 							<td><input type="text" size="30" name="t_surname" value="<?php echo $_SESSION['surname']; ?>"></td>
 						</tr>	
-						<?php if ($_SESSION['role'] != 3): ?>			
-							<tr>
-								<td><p class="tool"><?php echo $text['pass']; ?></p></td>
-								<td><input type="password" size="30" name="tns_pass" /required></td>
-							</tr>
-						<?php endif; ?>
 						<tr>
 							<td></td>
 							<td><button class="tool" type="submit" name="ns_ok"><?php echo $text['save']; ?></button></td>
@@ -274,6 +296,14 @@
 					<?php if (($_SESSION['role'] == 3) && ($_SESSION['id'] != $_GET['id'])): ?>
 						<form method="POST" action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg'] ?>" class="mess">
 						<table class="tool">
+						<tr>
+							<td><p class="tool"><?php echo $text['role_lock']; ?></p></td>
+							<?php if ($_SESSION['user_role'] == 0): ?>
+								<td><input type="radio" name="user_role" value="0" checked="checked"></></td>
+							<?php elseif ($_SESSION['user_role'] != 0): ?>								
+								<td><input type="radio" name="user_role" value="0"></td>
+							<?php endif; ?>
+						</tr>
 						<tr>
 							<td><p class="tool"><?php echo $text['role_user']; ?></p></td>
 							<?php if ($_SESSION['user_role'] == 1): ?>

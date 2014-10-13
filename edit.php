@@ -3,7 +3,7 @@
 	include('db.php');
 	include ('log_reg.php');
 	mb_internal_encoding("UTF-8");
-	if ((!isset($_GET['page'])) | (!isset($_GET['lg']))) {
+	if ((empty($_GET['page'])) || (empty($_GET['lg']))) {
 		header("Location: user.php?id={$_SESSION['id_page']}&page=1&lg={$_SESSION['lang']}");
 	}
 	$id_page = $_GET['id'];
@@ -21,7 +21,7 @@
 	$_SESSION['id_page'] = $_GET['id'];
 	$_SESSION['lang'] = $_GET['lg'];
 	$nn = $_GET['page'];
-	$text = parse_ini_file($_SESSION['lang'].".ini");	
+	$text = get_language($_GET['lg']);	
 
 	if (isset($_POST['mess_del_ok'])) {		
 		message_del($_GET['message']);
@@ -33,7 +33,7 @@
 	}
 
 	if (isset($_POST['send_ok'])) {
-		message_update($_GET['edit'], $_POST['send_mess'], $_POST['send_capt']);   
+		message_update($_GET['edit'], $_POST['send_mess'], $_POST['send_capt'], $_POST['send_mess_en'], $_POST['send_capt_en']);   
 		header("Location: user.php?id={$_GET['id']}&page={$nn}&lg={$_SESSION['lang']}");
 	}
 
@@ -77,6 +77,10 @@
 	</form>
 <?php
 	endif;
+	
+	if (isset($_POST['site_tools'])) {
+		header("Location: edit_page.php");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -96,7 +100,9 @@
 
 			<div id="menu">
 				<form method="POST" action="<?php echo $link; ?>" id="menu_b">			
-					<?php if (isset($_SESSION['id'])): ?>
+					<?php
+						if (isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
 						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
@@ -104,7 +110,12 @@
 					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
 					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
-					<?php elseif (!isset($_SESSION['id'])): ?>
+					<?php	if ($_SESSION['role'] == 3): ?>
+						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+					<?php 
+						endif; 
+						elseif (!isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
@@ -165,8 +176,12 @@
 					<p class="headd"><?php echo $text['edit_mess']; ?></p>
 					<img src="<?php echo $message->photo; ?>" class="edit_photo"></img> 
 					<a href="user.php?id=<?php echo $message->id_user; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
+					<p class="info_user_e"><?php echo $text['ukraine']; ?></p>
 					<textarea class="edit_text" name="send_capt" rows="1" cols="54" /required><?php echo strip_tags($message->capt); ?></textarea>
-					<textarea class="edit_text" name="send_mess" rows="15" cols="54" /required><?php echo strip_tags($message->message); ?></textarea>							
+					<textarea class="edit_text" name="send_mess" rows="15" cols="54" /required><?php echo strip_tags($message->message); ?></textarea>	
+					<p class="info_user_e"><?php echo $text['english']; ?></p>						
+					<textarea class="edit_text" name="send_capt_en" rows="1" cols="54" /required><?php echo strip_tags($message->capt_en); ?></textarea>
+					<textarea class="edit_text" name="send_mess_en" rows="15" cols="54" /required><?php echo strip_tags($message->message_en); ?></textarea>							
 					<p class="date"><?php echo $message->date; ?></p> 
 					<button class="edit" name="send_ok" type="submit"><?php echo $text['edit']; ?></button>
 				</form>   			
@@ -215,8 +230,13 @@
 					?>
 					<img src="<?php echo $message->photo; ?>" class="edit_photo"></img> 
 					<a href="user.php?id=<?php echo $message->id_user; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
-					<p class="head"><?php echo $message->capt; ?></p>     
-					<p class="mess"><?php echo $message->message; ?></p>      
+					<?php if ($_GET['lg'] == 'ua'): ?>
+						<p class="head"><?php echo $message->capt; ?></p>     
+						<p class="mess"><?php echo $message->message; ?></p>   
+					<?php elseif ($_GET['lg'] == 'en'): ?>  
+						<p class="head"><?php echo $message->capt_en; ?></p>     
+						<p class="mess"><?php echo $message->message_en; ?></p>   
+					<?php endif; ?>
 					<p class="date"><?php echo $message->date; ?></p>
 				</form>
 				<?php endif; ?>

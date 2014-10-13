@@ -15,7 +15,7 @@ body{
 	background-color: white;
 }
 #menu{
-	background-color: rgb(47,102,267);
+	background-color: lightgrey;
 	height: 7%;
 	position: relative;
 	width: 100%;
@@ -33,19 +33,8 @@ body{
 	vertical-align: middle;
 	display: inline-block;
 	padding: 0px;
-	margin: 0 auto 0;
 	text-align: center;	
 	z-index: 3;
-}
-#menu div{
-	height: 7%;
-	font-size: 16pt;
-	color: white;
-	width: 30%;
-	font-weight: bold;
-	margin-left:20px;
-	float:left;
-	font-family: times;
 }
 #head{
 	background: linear-gradient(to bottom, rgb(54,157,247), white);
@@ -135,7 +124,6 @@ body{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -167,10 +155,21 @@ li{
 }
 p.no_message {	
 	font-size: 10pt;
-	text-indent: 20px;
 	padding-bottom: 10px;
 	margin-bottom: 0px;
 	border-bottom: 1px solid lightgrey;
+}
+.edit_question_button {
+	position: relative;
+	text-align: center;
+	display: inline-block;
+	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+	border: 1px solid rgba(0,0,0,.1);
+}
+.edit_question {	
+	font-weight: bold;
+	text-align: center;
+	margin-top: 20px;
 }
 .check {
 	position: fixed;
@@ -185,16 +184,40 @@ p.no_message {
 	box-shadow: 0 0 10px 1px grey;
 	padding: 3px;
 }
+.edit_check {
+	position: relative;
+	vertical-align: middle;
+	background-color: white;
+	border: 1px solid lightgrey;
+	width: 90%;
+	height: 20%;
+	z-index: 10;
+	left: 5%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	box-shadow: 0 0 10px 1px grey;
+}
 p.info_user_b {
 	font-size: 10pt;
 	color: rgb(47,102,267);
+}
+p.info_user_e {
+	position: relative;
+	font-size: 10pt;
+	color: rgb(47,102,267);
+	left: 20%;
+}
+p.info_user_u {
+	position: relative;
+	font-size: 10pt;
+	color: rgb(47,102,267);
+	left: 10px;
 }
 p.info_user {
 	font-size: 10pt;
 	color: black
 }
 p.check_mess {
-	text-indent: 20px;
 	position: relative;
 	left: 10px;
 	width: 90%;
@@ -231,7 +254,6 @@ p.headd{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -245,7 +267,6 @@ p.headd1{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -259,7 +280,6 @@ p.headd1{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -273,7 +293,6 @@ p.headd1{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -310,6 +329,46 @@ a.capt{
 	margin: 0px;
 	margin-bottom: 10px;
 	z-index: 4;
+}
+.edit_blue {
+	color: rgb(47,102,267);	
+}
+.edit_blue_e {
+	color: rgb(47,102,267);	
+	left: 18%;
+}
+.edit_blue_l {
+	color: rgb(47,102,267);	
+	text-align: center;
+}
+.edit_err {
+	color: red;
+	font-weight: bold;
+	font-style: italic;
+	text-align: center;
+}
+.edit_head {
+	color: rgb(129,195,252);
+	font-weight: bold;
+}
+.edit_button {
+	left: 67%;
+	text-align: center;
+	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+	border: 1px solid rgba(0,0,0,.1);
+	margin-bottom: 10px;
+}
+.edit_button_t {
+	float: right;
+	text-align: center;
+	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+	border: 1px solid rgba(0,0,0,.1);
+	margin-bottom: 10px;
+}
+.edit_button_blue {
+	left: 67%;
+	color: rgb(47,102,267);	
+	text-align: right;
 }
 a.edit_capt{
 	position: relative;
@@ -368,7 +427,7 @@ p.head_edit{
 	z-index: 4;
 }
 #menu button{
-	background: rgb(47,102,267);
+	background: lightgrey;
 	border:none;
 	width:150px;
 	height:100%;
@@ -390,12 +449,13 @@ p.head_edit{
 	box-shadow: 0 0 4px lightgrey;
 }
 #menu button.pic{
-	background: rgb(47,102,267);
+	background: lightgrey;
 	border:none;
 	width:45px;
 	height:100%;
 	position: relative;
 	text-align: center;
+	margin-right: 10px;
 	display: inline-block;
 	color: white;
 	vertical-align: top;
@@ -459,7 +519,6 @@ a.pager_light{
 	position: relative;
 	color: white;
 	background-color: rgb(129,195,252);
-	text-indent: 20px;
 	font-weight: bold;
 	font-size: 10pt;
 	text-align: left;
@@ -582,6 +641,13 @@ img.mess{
 	margin-right: 5px;
 	margin-left: 10px;
 	position: absolute;
+}
+img.edit_mess{
+	width: 15%;
+	margin-right: 5px;
+	margin-left: 10px;
+	position: absolute;
+	margin-top: 25px;
 }
 #edit img.edit_photo{
 	position: absolute;
@@ -763,6 +829,13 @@ form.mess {
 	width: auto;
 	height: auto;
 }
+div.mess {
+	border-bottom: 1px solid lightgrey;
+	margin-bottom: 0px;
+	margin-top: 10px;
+	width: auto;
+	height: auto;
+}
 button.mess_b {
 	float: right;
 	right: 0px;
@@ -773,6 +846,7 @@ button.mess_b {
   background: white;
 	box-shadow: none;
 	border: none;
+	margin-bottom: 5px;
  	outline: none;
  	margin-left: 0px;
  	z-index: 7;
@@ -787,6 +861,52 @@ button.mess_b:hover {
 	border: none;
 }
 button.mess_b:active {
+	color: grey;
+}
+#info button.mess_b {
+	position: absolute;
+	width: auto;
+	color: lightgrey; 
+ 	text-decoration: none; 
+ 	user-select: none;
+  background: white;
+  left: 0;
+	box-shadow: none;
+	border: none;
+	margin: 0;
+ 	outline: none;
+ 	z-index: 7;
+}
+#info button.mess_b:hover {
+	color: grey;
+	cursor: pointer;
+	box-shadow: none;
+	border: none;
+}
+#info button.mess_b:active {
+	color: grey;
+}
+#info button.mess_b_x {
+	position: absolute;
+	width: auto;
+	color: lightgrey; 
+ 	text-decoration: none; 
+ 	user-select: none;
+  background: white;
+  left: 25px;
+	box-shadow: none;
+	border: none;
+	margin: 0;
+ 	outline: none;
+ 	z-index: 7;
+}
+#info button.mess_b_x:hover {
+	color: grey;
+	cursor: pointer;
+	box-shadow: none;
+	border: none;
+}
+#info button.mess_b_x:active {
 	color: grey;
 }
 button.edit_b {

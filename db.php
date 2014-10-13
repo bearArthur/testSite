@@ -14,10 +14,13 @@
 	function message_in($id_page, $id_user){
 		$message = htmlspecialchars($_POST['send_mess']);
 		$message = nl2br($message);
+		$message_en = htmlspecialchars($_POST['send_mess_en']);
+		$message_en = nl2br($message_en);
 		$capt = substr(htmlspecialchars($_POST['send_capt']), 0, 100);
+		$capt_en = substr(htmlspecialchars($_POST['send_capt_en']), 0, 100);
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("INSERT INTO messages(id_page, id_user, message, capt, date) VALUES (?, ?, ?, ?, NOW())");
-		$db_data = array($id_page, $id_user, $message, $capt);
+		$sql_query = $pdo->prepare("INSERT INTO messages(id_page, id_user, message, capt, message_en, capt_en, date) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+		$db_data = array($id_page, $id_user, $message, $capt, $message_en, $capt_en);
 		$sql_query->execute($db_data);
 		unset($pdo, $message, $sql_query, $db_data);
 		return 0;
@@ -25,7 +28,12 @@
 
 	function message_out($count){	
 		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message,messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+		if ($_GET['lg'] == 'ua') {
+			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message, messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+		}
+		elseif ($_GET['lg'] == 'en') {
+			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message_en as message, messages.capt_en as capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+		}
 		$sql_query -> execute();
 		$db_data = $sql_query -> fetchAll();
 		unset($pdo,$sql_query);
@@ -80,81 +88,153 @@
 		return $string.$format;
 	}
 
+	function get_language($lg) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("SELECT id, keyid, `{$lg}` FROM language");
+		$sql_query->execute();
+		$db_data = $sql_query->fetchall();
+		$text = array();
+		unset($_SESSION['mass']);
+		foreach ($db_data as $key) {
+			$text["{$key['keyid']}"] = $key[$lg];
+			$_SESSION['mass'][] = $key['keyid'];
+		}
+		return $text;
+	}
+
+	function change_user_names($lg, $mass) {
+		$pdo = db_connect();
+
+		foreach ($_SESSION['mass'] as $key) {
+			$link = "edit_".$key;
+			if (isset($_POST["{$link}"])) {
+				$t = $_POST["{$link}"];
+				$sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = :n WHERE `keyid` = '{$key}' ");
+				$sql_query->bindparam(':n',$t);
+				$sql_query->execute();	
+			}		
+		}
+
+		// $t = $_POST['edit_name'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = :n WHERE `keyid` = 'name' ");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_surname'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'surname'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_email'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'mail'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_date_reg'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'date_reg'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_date_log'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'date_log'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_ban_mess'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ban_mess'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_check_mess'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'check_mess'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_no'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_ok'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ok'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_check_user'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'check_user'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_no'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_ok'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ok'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_write_mess'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'write_mess'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_ukraine'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ukraine'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_english'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'english'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_send'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'send'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_messages'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'messages'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_read_more'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'read_more'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		// $t = $_POST['edit_no_message'];
+		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no_message'");
+		// $sql_query->bindparam(':n',$t);
+		// $sql_query->execute();
+		return 0;
+	}
+
 	function upload_image($id) {
 		$pdo = db_connect();
 		$path = $_FILES['userfile']['name'];
 		$pos = strrpos($path,'.');
 		$format = substr($path,$pos);
-		$pass = md5($_POST['ti_pass']);
-		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
-		$sql_query -> execute();
-		$db_data = $sql_query->fetchobject();
-		if ($pass == $db_data->password) {
 			if ($_FILES['userfile']['size'] <= 1024*1024*10) {
-					$name = gen_name($format);
-					$path = '/var/www/html/test/testSite/images/users/'.$name;
-					if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
-						$pdo = db_connect();
-						$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
-						$db_data = array($_SESSION['id_page'],$path);
-						$sql_query -> execute($db_data);	
-						$db_data = 'images/users/'.$name;
-						$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
-						$sql_query -> execute();
-					}						
+				$name = gen_name($format);
+				$path = '/var/www/html/test/testSite/images/users/'.$name;
+				if (move_uploaded_file($_FILES['userfile']['tmp_name'],$path)) {					
+					$pdo = db_connect();
+					$sql_query = $pdo -> prepare("INSERT INTO `images`(id_user,path) VALUES (?,?)");
+					$db_data = array($_SESSION['id_page'],$path);
+					$sql_query -> execute($db_data);	
+					$db_data = 'images/users/'.$name;
+					$sql_query = $pdo->prepare("UPDATE `users_data` SET `photo` = '{$db_data}' WHERE id = {$_SESSION['id_page']}");
+					$sql_query -> execute();
+				}		
 			}
-		}
 		unset($pdo,$sql_query,$db_data,$path,$pos,$format);
 		return 0;
 	}
 
 	function get_message($id_mess) {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT `messages`.`message`,`messages`.`id`,`messages`.`id_user`,`messages`.`id_page` ,`date`,`photo`,`messages`.`capt`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `users_data`.id = `messages`.`id_user` and `users`.`id` = `messages`.`id_user`");
+		$sql_query = $pdo->prepare("SELECT `messages`.`message`, `messages`.`message_en`,`messages`.`id`,`messages`.`id_user`,`messages`.`id_page` ,`date`,`photo`,`messages`.`capt`, `messages`.`capt_en`,`users`.`login` FROM `messages`,`users_data`,`users` WHERE `messages`.`id` = {$id_mess} and `users_data`.id = `messages`.`id_user` and `users`.`id` = `messages`.`id_user`");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchobject();
 		return $db_data;
 	}
 
 
-	function message_update($id_mess,$message,$capt) {
+	function message_update($id_mess, $message, $capt, $message_en, $capt_en) {
 		$pdo = db_connect();
 		$message = htmlspecialchars($message);
 		$message = nl2br($message);
 		$capt = substr(htmlspecialchars($capt),0,10);
-		$sql_query = $pdo->prepare("UPDATE messages SET message = '{$message}', capt = '{$capt}' WHERE id = {$id_mess}");
+		$message_en = htmlspecialchars($message_en);
+		$message_en = nl2br($message_en);
+		$capt_en = substr(htmlspecialchars($capt_en),0,10);
+		$sql_query = $pdo->prepare("UPDATE messages SET message = '{$message}', capt = '{$capt}', message_en = '{$message_en}', capt_en = '{$capt_en}' WHERE id = {$id_mess}");
 		$sql_query->execute();
-		return 0;
-	}
-
-	function user_check_b($id) {
-		$pdo = db_connect();
-		$sql_query = $pdo -> prepare("SELECT id FROM ban_list WHERE id = {$id}");
-		$sql_query->execute();
-		$db_data = $sql_query->fetchall();
-		if ($db_data) {
-			unset($pdo,$sql_query);
-			return true;
-		}
-		else {
-			unset($pdo,$sql_query);
-			return false;
-		}
-	}
-
-	function unlock_user($id_page) {
-		$pdo = db_connect();
-		$sql_query = $pdo->prepare("DELETE FROM ban_list WHERE id = {$id_page}");
-		$sql_query->execute();
-		unset($pdo, $sql_query, $id_page);
-		return 0;
-	}
-
-	function lock_user($id_page) {
-		$pdo = db_connect();
-		$sql_query = $pdo->prepare("INSERT INTO ban_list (id) VALUES ({$id_page})");
-		$sql_query->execute();
-		unset($pdo, $sql_query, $id_page);
 		return 0;
 	}
 
@@ -181,14 +261,8 @@
 		$pdo = db_connect();
 		$surname = htmlspecialchars($_POST['t_surname']);
 		$name = htmlspecialchars($_POST['t_name']);		
-		$pass = md5($_POST['tns_pass']);
-		$sql_query = $pdo -> prepare("SELECT password FROM users WHERE id = {$id}");
+		$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}', surname = '{$surname}' WHERE id = {$id}");	
 		$sql_query -> execute();
-		$db_data = $sql_query->fetchobject();
-		if ($pass == $db_data->password) {
-			$sql_query = $pdo -> prepare("UPDATE users_data SET name = '{$name}', surname = '{$surname}' WHERE id = {$id}");	
-			$sql_query -> execute();
-		}
   	unset($pdo,$sql_query,$name,$surname,$id);		
   	return 0;
 	}
@@ -305,8 +379,6 @@ function change_name_surname_a($id) {
 		$sql_query = $pdo->prepare("DELETE FROM `messages` WHERE `messages`.`id_page` = {$id_user}");
 		$sql_query->execute();
 		$sql_query = $pdo->prepare("DELETE FROM `images` WHERE `images`.`id_user` = {$id_user}");
-		$sql_query->execute();
-		$sql_query = $pdo->prepare("DELETE FROM `ban_list` WHERE `ban_list`.`id` = {$id_user}");
 		$sql_query->execute();
 		return 0;
 	}

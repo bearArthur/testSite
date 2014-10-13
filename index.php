@@ -5,7 +5,7 @@
 	include('log_reg.php');
 
 	if (isset($_SESSION['id'])) {
-		if (!isset($_GET['id']) | !isset($_GET['lg'])) {
+		if (empty($_GET['id']) || empty($_GET['lg'])) {
 			if (isset($_SESSION['lang'])) {
 				header("Location: index.php?id={$_SESSION['id']}&lg={$_SESSION['lang']}");
 			}
@@ -15,7 +15,7 @@
 		}
 	}
 	else {
-		if (!isset($_GET['lg'])) {
+		if (empty($_GET['lg'])) {
 			if (isset($_SESSION['lang'])) {
 				header("Location: index.php?lg={$_SESSION['lang']}");
 			}
@@ -32,11 +32,12 @@
 	if (isset($_SESSION['id'])) {
 		get_page_data($_SESSION['id']);
 	}	
-	$text = parse_ini_file($_SESSION['lang'].".ini");
+	$text = get_language($_GET['lg']);	
 
 	if (isset($_GET['home'])) {
 		$link = "index.php?home={$_GET['home']}&";
 		$image = "images/doorsl.png";
+		$title = $text['go_in'];
 	}
 	else {
 		if (isset($_SESSION['id'])) {
@@ -45,7 +46,8 @@
 		else {
 			$link = "index.php?";
 		}
-		$image = "images/homel.png";
+		$image = "images/homel.png";		
+		$title = $text['home'];
 	}
 
 	$error_r = '';
@@ -113,6 +115,10 @@
 	if (isset($_POST['del_no'])){
 		header("Location: index.php");
 	}
+
+	if (isset($_POST['site_tools'])) {
+		header("Location: edit_page.php");
+	}
 ?>
 
 <!DOCTYPE HTML5>
@@ -120,7 +126,7 @@
 <html>
 	
 	<head>
-		<title><?php echo $text['home']; ?></title>
+		<title><?php echo $title; ?></title>
 		<link rel="shortcut icon" href="<?php echo $image; ?>" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="Style.css">
 		<meta charset="utf8">
@@ -133,7 +139,9 @@
 			<div id="menu">
 
 				<form method="POST" action="<?php echo $link; ?>lg=<?php echo $_GET['lg']; ?>" id="menu_b">
-					<?php if (isset($_SESSION['id'])): ?>
+					<?php
+						if (isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
 						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
@@ -141,7 +149,12 @@
 					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
 					<?php if (isset($_SESSION['id'])): ?>
 						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
-					<?php elseif (!isset($_SESSION['id'])): ?>
+					<?php	if ($_SESSION['role'] == 3): ?>
+						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+					<?php 
+						endif; 
+						elseif (!isset($_SESSION['id'])): 
+					?>
 						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
 					<?php endif; ?>
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
@@ -206,19 +219,19 @@
 						<p class="headd"><?php echo $text['register']; ?></p>
 						<table>
 							<tr>
-								<td> <p><?php echo $text['login']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['login']; ?></p> </td>
 								<td> <input type="text" name="reg_login" value="<?php if (isset($_SESSION['reg_login'])) {echo $_SESSION['reg_login'];} ?>" /required></td>
 							</tr>
 							<tr>
-								<td> <p><?php echo $text['email']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['email']; ?></p> </td>
 								<td> <input type="text" name="reg_email" value="<?php if (isset($_SESSION['reg_login'])) {echo $_SESSION['reg_email'];} ?>" /required></td>
 							</tr>
 							<tr>
-								<td> <p><?php echo $text['pass']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['pass']; ?></p> </td>
 								<td> <input type="password" name="reg_pass" /required> </td>
 							</tr>
 							<tr>
-								<td> <p><?php echo $text['rpass']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['rpass']; ?></p> </td>
 								<td> <input type="password" name="reg_rpass" /required> </td>
 							</tr>
 							<tr>
@@ -232,16 +245,16 @@
 						<p class="headd"><?php echo $text['author']; ?></p>
 						<table>
 							<tr>
-								<td> <p><?php echo $text['email']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['email']; ?></p> </td>
 								<td> <input type="text" name="log_email" value="<?php if (isset($_SESSION['log_email'])) {echo $_SESSION['log_email'];} ?>" /required> </td>
 							</tr>
 							<tr>
-								<td> <p><?php echo $text['pass']; ?></p> </td>
+								<td> <p class="info_user_u"><?php echo $text['pass']; ?></p> </td>
 								<td> <input type="password" name="log_pass" /required> </td>
 							</tr>
 							<tr>
 								<td> <p class="error"><?php echo $error_l; ?></p> </td>
-								<td> <button type="submit" name="log_ok"> <?php echo $text['b_author']; ?></button>
+								<td> <button type="submit" name="log_ok"> <?php echo $text['b_author']; ?></button></td>
 							</tr>
 						</table>
 					</form>
@@ -263,7 +276,7 @@
 						</form>		
 					<?php
 						endforeach;
-						elseif (!isset($_SESSION['id']) | isset($_SESSION['id'])):
+						elseif (!isset($_SESSION['id']) || isset($_SESSION['id'])):
 						$db_data = get_users();
 						foreach ($db_data as $key):
 					?>	
