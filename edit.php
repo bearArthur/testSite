@@ -34,7 +34,7 @@
 
 	if (isset($_POST['send_ok'])) {
 		message_update($_GET['edit'], $_POST['send_mess'], $_POST['send_capt'], $_POST['send_mess_en'], $_POST['send_capt_en']);   
-		header("Location: user.php?id={$_GET['id']}&page={$nn}&lg={$_SESSION['lang']}");
+		header("Location: user.php?id={$_GET['id']}&page={$_GET['page']}&lg={$_SESSION['lang']}");
 	}
 
 	if (isset($_POST['tools'])) {
@@ -42,7 +42,7 @@
 	} 
 
 	if (isset($_POST['mess_ed'])) {
-			header("Location: edit.php?id={$_SESSION['id_page']}&page={$nn}&edit={$_POST['mess_ed']}&lg={$_SESSION['lang']}");
+			header("Location: edit.php?id={$_SESSION['id_page']}&page={$_GET['page']}&edit={$_POST['mess_ed']}&lg={$_SESSION['lang']}");
 	}
 
 	if (isset($_POST['profile'])) {
@@ -78,9 +78,20 @@
 <?php
 	endif;
 	
-	if (isset($_POST['site_tools'])) {
-		header("Location: edit_page.php");
-	}
+	if (isset($_POST['site_tools'])):
+	?>
+		<form class="check" method="POST" action="">
+			<p class="check_mess"><?php echo $text['check_page']; ?></p>
+			<a href="edit_page.php?template=home&lg=<?php echo $_GET['lg']; ?>"><img src="images/homec.png"></a>
+			<a href="edit_page.php?template=user&lg=<?php echo $_GET['lg']; ?>"><img src="images/userc.png"></a>
+			<a href="edit_page.php?template=tools&lg=<?php echo $_GET['lg']; ?>"><img src="images/toolsc.png"></a>
+			<a href="edit_page.php?template=edit&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=message&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=register&lg=<?php echo $_GET['lg']; ?>"><img src="images/doorsc.png"></a>
+			<button type="submit" name="close" class="check_b"><?php echo $text['close']; ?></button>
+		</form>
+	<?php
+	endif;
 ?>
 
 <!DOCTYPE HTMl5>
@@ -131,7 +142,7 @@
 			
 			<div id="info">
 				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
-				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page={$nn}&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
+				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
 				<table>
 					<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
 						<tr>
@@ -229,7 +240,7 @@
 						endif;
 					?>
 					<img src="<?php echo $message->photo; ?>" class="edit_photo"></img> 
-					<a href="user.php?id=<?php echo $message->id_user; ?>&page=1&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
+					<a href="user.php?id=<?php echo $message->id_user; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
 					<?php if ($_GET['lg'] == 'ua'): ?>
 						<p class="head"><?php echo $message->capt; ?></p>     
 						<p class="mess"><?php echo $message->message; ?></p>   

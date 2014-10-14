@@ -177,6 +177,7 @@ p.no_message {
 	background-color: white;
 	border: 1px solid lightgrey;
 	width: 20%;
+	text-align: center;
 	height: 20%;
 	z-index: 10;
 	left:40%;
@@ -219,7 +220,7 @@ p.info_user {
 }
 p.check_mess {
 	position: relative;
-	left: 10px;
+	font-size: 10pt;
 	width: 90%;
 }
 button.check_b{
@@ -229,8 +230,6 @@ button.check_b{
 	margin-top: 5px;
 	padding:3px;
 	width:40%;
-	left: 9%;
-	top:10%;
 	position: relative;
 	color: black;
 	margin-bottom: 10px;
@@ -818,7 +817,7 @@ p.date{
 	padding: 2px;
 	margin: 0px;
 	width: 12%;
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-bottom: 10px;
 	left: 86%;
 }
@@ -853,6 +852,12 @@ button.mess_b {
 }
 img.butt {
 	height: 90%;
+}
+.check img {
+	height: 25%;
+}
+.edit_check img {
+	height: 25%;	
 }
 button.mess_b:hover {
 	color: grey;

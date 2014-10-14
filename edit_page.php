@@ -26,31 +26,7 @@
 	if (isset($_POST['site_tools'])) {
 		$name = $_POST['edit_name'];
 		change_user_names($_GET['lg'], $_SESSION['mass']);
-		switch ($_GET['template']) {
-			case 'user':
-				header("Location: user.php");
-				break;
-			
-			case 'register':
-				header("Location: index.php");
-				break;
-
-			case 'home':
-				header("Location: index.php");
-				break;
-
-			case 'tools':
-				header("Location: tools.php");
-				break;
-
-			case 'edit':
-				header("Location: user.php");
-				break;
-
-			case 'message':
-				header("Location: user.php");
-				break;
-		}
+		header("Location: user.php");
 	}
 ?>
 
@@ -116,6 +92,17 @@
 						<input class="edit_question" name="edit_check_user" size="30" type="text" value="<?php echo $text['check_user']; ?>"></br>
 						<input class="edit_question_button" name="edit_not" size="10" type="text" value="<?php echo $text['not']; ?>">
 						<input class="edit_question_button" name="edit_ok" size="10" type="text" value="<?php echo $text['ok']; ?>">
+					</div>
+
+					<div class="edit_check">
+						<input class="edit_question" name="edit_check_page" size="30" type="text" value="<?php echo $text['check_page']; ?>"></br>
+							<a class="check_page" href=""><img src="images/homec.png"></img></a>
+							<a class="check_page" href=""><img src="images/userc.png"></img></a>
+							<a class="check_page" href=""><img src="images/toolsc.png"></img></a>
+							<a class="check_page" href=""><img src="images/pencilc.png"></img></a>
+							<a class="check_page" href=""><img src="images/pencilc.png"></img></a>
+							<a class="check_page" href=""><img src="images/doorsc.png"></img></a>
+						<input class="edit_question_button" name="edit_close" size="10" type="text" value="<?php echo $text['close']; ?>">
 					</div>
 
 			</div>

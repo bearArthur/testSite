@@ -26,13 +26,13 @@
 		return 0;
 	}
 
-	function message_out($count){	
+	function message_out($count, $id){	
 		$pdo = db_connect();
 		if ($_GET['lg'] == 'ua') {
-			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message, messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message, messages.capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$id} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
 		}
 		elseif ($_GET['lg'] == 'en') {
-			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message_en as message, messages.capt_en as capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$_SESSION['id_page']} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
+			$sql_query = $pdo -> prepare("SELECT users.login, users_data.photo, messages.message_en as message, messages.capt_en as capt, messages.id, messages.id_user, messages.id_page, messages.date FROM users_data, messages, users WHERE messages.id_user = users_data.id and messages.id_page = {$id} and users.id = messages.id_user ORDER BY `date` DESC LIMIT {$count},10 ");
 		}
 		$sql_query -> execute();
 		$db_data = $sql_query -> fetchAll();
@@ -96,10 +96,25 @@
 		$text = array();
 		unset($_SESSION['mass']);
 		foreach ($db_data as $key) {
-			$text["{$key['keyid']}"] = $key[$lg];
+			$text[$key['keyid']] = $key[$lg];
 			$_SESSION['mass'][] = $key['keyid'];
 		}
 		return $text;
+	}
+
+	function coment_in($coment, $capt) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_message, capt, coment, date) VALUES (?, ?, ?, ?, NOW())");
+		$sql_query->execute($_SESSION['id'], $_GET['message'], $capt, $coment);
+		return 0;
+	}
+
+	function coment_out($id_page, $count) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("SELECT `users`.login, `users`.id, `coments`.capt, `coments`.coment, `coments`.date FROM users, coments WHERE `users`.id = `coments`.id_user AND `coments`.id_message = {$id_page} ORDER BY date DESC LIMIT {$count},10");
+		$sql_query->execute();
+		$db_data = $sql_query->fetchall();
+		return $db_data;
 	}
 
 	function change_user_names($lg, $mass) {

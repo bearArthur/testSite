@@ -107,9 +107,21 @@
 		header("Location: user.php");
 	}
 
-	if (isset($_POST['site_tools'])) {
-		header("Location: edit_page.php");
-	}
+	if (isset($_POST['site_tools'])):
+	?>
+		<form class="check" method="POST" action="">
+			<p class="check_mess"><?php echo $text['check_page']; ?></p>
+			<a href="edit_page.php?template=home&lg=<?php echo $_GET['lg']; ?>"><img src="images/homec.png"></a>
+			<a href="edit_page.php?template=user&lg=<?php echo $_GET['lg']; ?>"><img src="images/userc.png"></a>
+			<a href="edit_page.php?template=tools&lg=<?php echo $_GET['lg']; ?>"><img src="images/toolsc.png"></a>
+			<a href="edit_page.php?template=edit&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=message&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=register&lg=<?php echo $_GET['lg']; ?>"><img src="images/doorsc.png"></a>
+			<button type="submit" name="close" class="check_b"><?php echo $text['close']; ?></button>
+		</form>
+	<?php
+	endif;
+
 ?>
 
 <!DOCTYPE HTMl5>
@@ -154,7 +166,7 @@
 			</div>
 			
 			<form id="info" method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>">
-				<?php if ($_SESSION['role'] == 3 && $_SESSION['id'] != $_GET['id']): ?>
+				<?php if (isset($_SESSION['role']) && $_SESSION['role'] == 3 && $_SESSION['id'] != $_GET['id']): ?>
 					<button class="mess_b" name="edit_user" value="<?php echo $_GET['id']; ?>" type="submit" >!</button>
 					<button class="mess_b_x" name="delete_user" value="<?php echo $_GET['id']; ?>" type="submit">x</button>	</br></br>
 				<?php endif; ?>

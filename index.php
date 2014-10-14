@@ -116,9 +116,20 @@
 		header("Location: index.php");
 	}
 
-	if (isset($_POST['site_tools'])) {
-		header("Location: edit_page.php");
-	}
+	if (isset($_POST['site_tools'])):
+	?>
+		<form class="check" method="POST" action="">
+			<p class="check_mess"><?php echo $text['check_page']; ?></p>
+			<a href="edit_page.php?template=home&lg=<?php echo $_GET['lg']; ?>"><img src="images/homec.png"></a>
+			<a href="edit_page.php?template=user&lg=<?php echo $_GET['lg']; ?>"><img src="images/userc.png"></a>
+			<a href="edit_page.php?template=tools&lg=<?php echo $_GET['lg']; ?>"><img src="images/toolsc.png"></a>
+			<a href="edit_page.php?template=edit&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=message&lg=<?php echo $_GET['lg']; ?>"><img src="images/pencilc.png"></a>
+			<a href="edit_page.php?template=register&lg=<?php echo $_GET['lg']; ?>"><img src="images/doorsc.png"></a>
+			<button type="submit" name="close" class="check_b"><?php echo $text['close']; ?></button>
+		</form>
+	<?php
+	endif;
 ?>
 
 <!DOCTYPE HTML5>
