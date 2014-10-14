@@ -10,7 +10,7 @@
 	$nn = $_GET['page'];
 	if (isset($_GET['message'])) {
 		$id_mess = $_GET['message'];
-		$link = "edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&lg={$_GET['lg']}";
+		$link = "edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}";
 	}
 	elseif (isset($_GET['edit'])) {
 		$id_mess = $_GET['edit'];
@@ -77,6 +77,22 @@
 	</form>
 <?php
 	endif;
+
+	if (isset($_POST['com_del_ok'])) {
+		coment_delete($_SESSION['id_com']);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
+
+	if (isset($_POST['coment_ok'])):
+		$_SESSION['id_com'] = $_POST['coment_ok'];
+?>
+	<form class="check" method="POST" action="<?php echo $link; ?>">
+	<p class="check_mess"><?php echo $text['check_com']; ?></p>
+	<button type="submit" name="com_del_no" class="check_b"><?php echo $text['not']; ?></button>
+	<button type="submit" name="com_del_ok" class="check_b"><?php echo $text['ok']; ?></button>
+	</form>
+<?php
+	endif;
 	
 	if (isset($_POST['site_tools'])):
 	?>
@@ -92,6 +108,11 @@
 		</form>
 	<?php
 	endif;
+
+	if (isset($_POST['send_coment'])) {
+		coment_in($_POST['coment'], $_POST['coment_capt']);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -249,7 +270,140 @@
 						<p class="mess"><?php echo $message->message_en; ?></p>   
 					<?php endif; ?>
 					<p class="date"><?php echo $message->date; ?></p>
-				</form>
+					</form>
+					
+						<form class="coment_send" method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>">
+							<p class="coment_send"><?php echo $text['write_coment'] ?></p>
+							<textarea class="coment_send_h" name="coment_capt"></textarea>
+							<textarea class="coment_send_c" name="coment"></textarea>
+							<button class="coment_send" name="send_coment"><?php echo $text['send'] ?></button>
+						</form>
+
+						<div class="coment">
+
+						<p class="coment_coments"><?php echo $text['coments'] ?></p>
+						
+						<?php
+								$temp = coment_get_row_count($_GET['message']);
+								$row_count = $temp[0];
+								if ($row_count > 10):
+						?>
+
+						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_up_com">
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><<</a>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if ($_GET['cpage'] > 1) {echo $_GET['cpage'] - 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><</a>
+							<?php
+								$temp = coment_get_row_count($_GET['message']);
+								$row_count = $temp[0];
+								if ($row_count % 10 != 0) {
+									$page_count = intval($row_count / 10) + 1;
+								} 
+								else {
+									$page_count = intval($row_count / 10);
+								}
+								$n = 1;
+									while ($n <= $page_count) {
+										if ($n == $_GET['cpage']): ?>
+											<a class="pager_com_l" href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $n; ?>&lg=<?php echo $_GET['lg']; ?>"><?php echo $n; ?></a>								
+										<?php	
+											$n++;
+											else: ?>
+											<a class="pager_com" href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $n; ?>&lg=<?php echo $_GET['lg']; ?>"><?php echo $n; ?></a>
+										<?php
+											$n++;
+											endif;
+									}
+							?>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if (($_GET['cpage'] +1) <= $page_count) {echo $_GET['cpage'] + 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">></a>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $page_count; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">>></a>
+						</form>
+
+						<?php  
+							endif;
+							$row_count = ($_GET['cpage'] - 1) * 10;
+							$db_data = coment_out($_GET['id'], $row_count, $_GET['message']);
+							foreach ($db_data as $key):
+						?>
+							<form class="coment" method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>">
+								<img class="coment" src="<?php echo $key['photo']; ?>">
+								<?php 
+									if (isset($_SESSION['id'])): 
+										if ($_SESSION['role'] == 1):
+											if ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] == $key['id_user']):
+								?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php 
+											elseif ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] != $key['id_user']):
+								 ?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php 
+											endif;
+										elseif ($_SESSION['role'] == 2):
+											if ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] == $key['id_user']):
+								?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php
+											elseif ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] != $key['id_user']):
+								?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php
+											elseif ($_SESSION['id'] != $key['id_page'] && $_SESSION['id'] == $key['id_user']):
+								?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php
+											endif;
+										elseif ($_SESSION['role'] == 3):
+								?>
+									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
+								<?php
+										endif;
+									endif;
+								?>
+								<a class="coment" href="user.php?id=<?php echo $key['id']; ?>&page=1&lg=<?php echo $_GET['lg'] ?>"><?php echo $key['login']; ?></a>
+								<p class="coment_h"><?php echo $key['capt']; ?></p>
+								<p class="coment_c"><?php echo $key['coment']; ?></p>
+								<p class="coment_d"><?php echo $key['date']; ?></p>
+							</form>
+						<?php
+							endforeach;
+							$temp = coment_get_row_count($_GET['message']);
+							$row_count = $temp[0];
+							if ($row_count > 10):
+						?>
+
+						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_down_com">
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><<</a>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if ($_GET['cpage'] > 1) {echo $_GET['cpage'] - 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><</a>
+							<?php
+								$temp = coment_get_row_count($_GET['message']);
+								$row_count = $temp[0];
+								if ($row_count % 10 != 0) {
+									$page_count = intval($row_count / 10) + 1;
+								} 
+								else {
+									$page_count = intval($row_count / 10);
+								}
+								$n = 1;
+									while ($n <= $page_count) {
+										if ($n == $_GET['cpage']): ?>
+											<a class="pager_com_l" href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $n; ?>&lg=<?php echo $_GET['lg']; ?>"><?php echo $n; ?></a>								
+										<?php	
+											$n++;
+											else: ?>
+											<a class="pager_com" href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $n; ?>&lg=<?php echo $_GET['lg']; ?>"><?php echo $n; ?></a>
+										<?php
+											$n++;
+											endif;
+									}
+							?>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if (($_GET['cpage'] +1) <= $page_count) {echo $_GET['cpage'] + 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">></a>
+							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $page_count; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">>></a>
+						</form>
+						<?php elseif ($row_count == 0): ?>
+							<p class="coment_r"><?php echo $text['no_coment'] ?></p>
+						<?php endif; ?>
+						</div>
+						
 				<?php endif; ?>
 				
 			</div>

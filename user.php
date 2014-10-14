@@ -227,6 +227,7 @@
 						<textarea name="send_mess_en" rows="4" cols="68" /required></textarea>		
 						<button name="send_ok" type="submit"><?php echo $text['send']; ?></button>
 					</form>		
+
 				<?php elseif (isset($_SESSION['id']) && $_SESSION['role'] == 1 && $_SESSION['id'] == $_GET['id']): ?>
 					<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" id="send">			
 						<p class="headd"><?php echo $text['write_mess']; ?></p>	
@@ -335,10 +336,10 @@
 						endif;
 					?>
 					<a href="user.php?id=<?php echo $key['id_user']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="capt"><?php echo $key['login']; ?></a><br/><br/>
-					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $key['id']; ?>&lg=<?php echo $_GET['lg']; ?>" class="capth"><?php echo $key['capt']; ?></a><br/>			
+					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $key['id']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="capth"><?php echo $key['capt']; ?></a><br/>			
 					<p class="mess"><?php echo $mess_out; ?></p>	
 					<?php if (strlen($key['message']) > 150): ?>
-					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $key['id']; ?>&lg=<?php echo $_GET['lg']; ?>" class="captl"><?php echo $text['read_more']; ?></a><br/>
+					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $key['id']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="captl"><?php echo $text['read_more']; ?></a><br/>
 					<?php endif; ?>		
 					<p class="date"><?php echo $key['date']; ?></p>
 				</form>

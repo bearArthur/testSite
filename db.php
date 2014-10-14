@@ -44,6 +44,8 @@
 		$pdo = db_connect();
 		$sql_query = $pdo->prepare("DELETE FROM `messages` WHERE `messages`.`id` = {$id}");
 		$sql_query->execute();
+		$sql_query = $pdo->prepare("DELETE FROM `coments` WHERE id_message = {$id}");
+		$sql_query->execute();
 		return 0;
 	}
 
@@ -52,6 +54,14 @@
 		$sql_query = $pdo -> prepare("SELECT COUNT(1) FROM messages WHERE messages.id_page = {$id_page}");
 		$sql_query -> execute();
 		$row_count = $sql_query -> fetch();
+		return $row_count;
+	}
+
+	function coment_get_row_count($id_mess){	
+		$pdo = db_connect();	
+		$sql_query = $pdo->prepare("SELECT COUNT(1) FROM `coments` WHERE `coments`.id_message = {$id_mess}");
+		$sql_query->execute();
+		$row_count = $sql_query->fetch();
 		return $row_count;
 	}
 
@@ -103,18 +113,35 @@
 	}
 
 	function coment_in($coment, $capt) {
+		if (empty($capt)) {
+			$capt = substr($coment, 0, 15);
+			$t = 'a';
+			$n = 14;
+			while ($t != ' ') {
+				$t = substr($capt, $n, 1);
+				$n--;
+			}
+			$capt = substr($coment, 0, $n);
+		}
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_message, capt, coment, date) VALUES (?, ?, ?, ?, NOW())");
-		$sql_query->execute($_SESSION['id'], $_GET['message'], $capt, $coment);
+		$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_page, capt, coment, date, id_message) VALUES (?, ?, ?, ?, NOW(), ?)");
+		$sql_query->execute(array($_SESSION['id'], $_GET['id'], $capt, $coment, $_GET['message']));
 		return 0;
 	}
 
-	function coment_out($id_page, $count) {
+	function coment_out($id_page, $count, $id_mess) {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT `users`.login, `users`.id, `coments`.capt, `coments`.coment, `coments`.date FROM users, coments WHERE `users`.id = `coments`.id_user AND `coments`.id_message = {$id_page} ORDER BY date DESC LIMIT {$count},10");
+		$sql_query = $pdo->prepare("SELECT `coments`.id as cid, `users_data`.photo, `users`.login, `users`.id, `coments`.capt, `coments`.coment, `coments`.date FROM users, coments, users_data WHERE `users_data`.id = `users`.id AND `users`.id = `coments`.id_user AND `coments`.id_page = {$id_page} AND `coments`.id_message = {$id_mess} ORDER BY `coments`.`date` DESC LIMIT {$count},10");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchall();
 		return $db_data;
+	}
+
+	function coment_delete($id) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("DELETE FROM `coments` WHERE id = {$id}");
+		$sql_query->execute();
+		return 0;
 	}
 
 	function change_user_names($lg, $mass) {
@@ -129,83 +156,6 @@
 				$sql_query->execute();	
 			}		
 		}
-
-		// $t = $_POST['edit_name'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = :n WHERE `keyid` = 'name' ");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_surname'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'surname'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_email'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'mail'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_date_reg'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'date_reg'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_date_log'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'date_log'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_ban_mess'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ban_mess'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_check_mess'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'check_mess'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_no'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_ok'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ok'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_check_user'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'check_user'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_no'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_ok'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ok'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_write_mess'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'write_mess'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_ukraine'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'ukraine'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_english'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'english'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_send'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'send'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_messages'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'messages'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_read_more'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'read_more'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
-		// $t = $_POST['edit_no_message'];
-		// $sql_query = $pdo->prepare("UPDATE language SET `{$lg}` = '{$_POST['']}' WHERE keyid = 'no_message'");
-		// $sql_query->bindparam(':n',$t);
-		// $sql_query->execute();
 		return 0;
 	}
 
