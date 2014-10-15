@@ -341,7 +341,41 @@
 					<?php if (strlen($key['message']) > 150): ?>
 					<a href="edit.php?id=<?php echo $key['id_page']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $key['id']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="captl"><?php echo $text['read_more']; ?></a><br/>
 					<?php endif; ?>		
-					<p class="date"><?php echo $key['date']; ?></p>
+						<p class="data_d"><?php echo $key['date']; ?></p>
+					<div class="data_b">
+							<?php 
+								if (isset($_SESSION['id'])):
+								$db_data = get_user_mark($key['id'], $_SESSION['id']);
+								if (!empty($db_data)):								
+							?>								
+								<p class="data"><?php echo $text['your_mark'].": ".$db_data->mark; ?></p>
+							<?php 
+								endif;
+								endif;
+							?>
+						<p class="data">
+							<?php 
+								$db_data = get_mark($key['id']);
+								$mark = 0;
+								$n = 0;
+								if (!empty($db_data)) {
+									foreach ($db_data as $val) {
+										$mark += $val['mark'];
+										$n++;
+									}
+									$mark /= $n;
+									echo $text['mark'].": ".round($mark,1);
+								} 
+								else {
+									echo $text['no_mark'];
+								}
+							?>
+						</p>
+						<?php if ($n != 0): ?>
+							<p class="data"><?php echo $text['rated'].": ".$n; ?></p>
+						<?php endif; ?>
+						<p class="data_l"><?php $row_count = coment_get_row_count($key['id']); echo $text['coments_count'].": ".$row_count[0]; ?></p>
+					</div>
 				</form>
 				<?php	endforeach;	?>
 

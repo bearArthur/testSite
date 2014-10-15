@@ -113,6 +113,36 @@
 		coment_in($_POST['coment'], $_POST['coment_capt']);
 		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
 	}
+
+	if (isset($_POST['mark_1'])) {
+		set_mark($_SESSION['id'], $_POST['mark_1'], 1);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
+
+	if (isset($_POST['mark_2'])) {
+		set_mark($_SESSION['id'], $_POST['mark_2'], 2);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");		
+	}
+
+	if (isset($_POST['mark_3'])) {
+		set_mark($_SESSION['id'], $_POST['mark_3'], 3);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
+
+	if (isset($_POST['mark_4'])) {
+		set_mark($_SESSION['id'], $_POST['mark_4'], 4);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
+
+	if (isset($_POST['mark_5'])) {
+		set_mark($_SESSION['id'], $_POST['mark_5'], 5);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
+
+	if (isset($_POST['del_mark'])) {
+		del_mark($_POST['del_mark'], $_SESSION['id']);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -153,8 +183,8 @@
 					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
 				</form>
 					<?php if (isset($_GET['message'])): ?>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
+						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
+						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
 					<?php elseif (isset($_GET['edit'])): ?>
 						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
 						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
@@ -214,15 +244,15 @@
 					<p class="info_user_e"><?php echo $text['english']; ?></p>						
 					<textarea class="edit_text" name="send_capt_en" rows="1" cols="54" /required><?php echo strip_tags($message->capt_en); ?></textarea>
 					<textarea class="edit_text" name="send_mess_en" rows="15" cols="54" /required><?php echo strip_tags($message->message_en); ?></textarea>							
-					<p class="date"><?php echo $message->date; ?></p> 
+					<p class="data_d"><?php echo $message->date; ?></p> 
 					<button class="edit" name="send_ok" type="submit"><?php echo $text['edit']; ?></button>
 				</form>   			
 				<?php 
 					elseif (isset($_GET['message'])): 
 					$message = get_message($_GET['message']);
 				?>
-				<form method="POST" action="<?php echo $link; ?>" id="edit">   
-					<p class="headd"><?php echo $text['more']; ?></p>
+				<p class="headd"><?php echo $text['more']; ?></p>
+				<form method="POST" action="<?php echo $link; ?>" id="edit">   					
 					<?php 
 						if (isset($_SESSION['id'])): 
 							if ($_SESSION['role'] == 1):
@@ -269,15 +299,62 @@
 						<p class="head"><?php echo $message->capt_en; ?></p>     
 						<p class="mess"><?php echo $message->message_en; ?></p>   
 					<?php endif; ?>
-					<p class="date"><?php echo $message->date; ?></p>
+						<p class="data_d"><?php echo $message->date; ?></p>
+					<div class="data_b">
+							<?php 
+								if (isset($_SESSION['id'])):
+								$db_data_c = get_user_mark($message->id, $_SESSION['id']);
+								if (empty($db_data_c)):
+							?>
+								<div class="mark">
+									<p class="data_l"><?php echo $text['give_mark'].": "; ?></p>
+									<button class="mark" type="submit" name="mark_1" value="<?php echo $message->id; ?>">1</button>
+									<button class="mark" type="submit" name="mark_2" value="<?php echo $message->id; ?>">2</button>
+									<button class="mark" type="submit" name="mark_3" value="<?php echo $message->id; ?>">3</button>
+									<button class="mark" type="submit" name="mark_4" value="<?php echo $message->id; ?>">4</button>
+									<button class="mark_l" type="submit" name="mark_5" value="<?php echo $message->id; ?>">5</button>
+								</div>
+							<?php 
+								elseif (!empty($db_data_c)):								
+							?>								
+								<button class="mark" type="submit" name="del_mark" value="<?php echo $message->id; ?>">X</button>
+								<p class="data"><?php echo $text['your_mark'].": ".$db_data_c->mark; ?></p>
+							<?php 
+								endif;
+								endif;
+							?>
+						<p class="data">
+							<?php 
+								$db_data_c = get_mark($message->id);
+								$mark = 0;
+								$n = 0;
+								if (!empty($db_data_c)) {
+									foreach ($db_data_c as $val) {
+										$mark += $val['mark'];
+										$n++;
+									}
+									$mark /= $n;
+									echo $text['mark'].": ".round($mark,1);
+								} 
+								else {
+									echo $text['no_mark'];
+								}
+							?>
+						</p>
+						<?php if ($n != 0): ?>
+							<p class="data"><?php echo $text['rated'].": ".$n; ?></p>
+						<?php endif; ?>
+						<p class="data_l"><?php $row_count = coment_get_row_count($message->id); echo $text['coments_count'].": ".$row_count[0]; ?></p>
+					</div>
 					</form>
-					
+					<?php if (isset($_SESSION['id'])): ?>
 						<form class="coment_send" method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>">
 							<p class="coment_send"><?php echo $text['write_coment'] ?></p>
 							<textarea class="coment_send_h" name="coment_capt"></textarea>
 							<textarea class="coment_send_c" name="coment"></textarea>
 							<button class="coment_send" name="send_coment"><?php echo $text['send'] ?></button>
 						</form>
+					<?php endif; ?>
 
 						<div class="coment">
 
@@ -329,7 +406,7 @@
 								<?php 
 									if (isset($_SESSION['id'])): 
 										if ($_SESSION['role'] == 1):
-											if ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] == $key['id_user']):
+											if ($_SESSION['id'] == $key['id_page'] && $_SESSION['id'] == $key['id']):
 								?>
 									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
 								<?php 
@@ -347,7 +424,7 @@
 								?>
 									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
 								<?php
-											elseif ($_SESSION['id'] != $key['id_page'] && $_SESSION['id'] == $key['id_user']):
+											elseif ($_SESSION['id'] != $key['id_page'] && $_SESSION['id'] == $key['id']):
 								?>
 									<button class="coment" type="submit" name="coment_ok" value="<?php echo $key['cid']; ?>">x</button>
 								<?php

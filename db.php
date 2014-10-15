@@ -46,7 +46,39 @@
 		$sql_query->execute();
 		$sql_query = $pdo->prepare("DELETE FROM `coments` WHERE id_message = {$id}");
 		$sql_query->execute();
+		$sql_query = $pdo->prepare("DELETE FROM `marks` WHERE id_message = {$id}");
+		$sql_query->execute();
 		return 0;
+	}
+
+	function get_mark($id_mess) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("SELECT * FROM `marks` WHERE id_message = {$id_mess}");
+		$sql_query->execute();
+		$db_data = $sql_query->fetchall();
+		return $db_data;
+	}
+
+	function set_mark($id_user, $id_mess, $mark) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("INSERT INTO `marks` (id_user, id_message, mark) VALUES (?,?,?)");
+		$sql_query->execute(array($id_user, $id_mess, $mark));
+		return 0;
+	}
+
+	function del_mark($id_mess, $id_user) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("DELETE FROM `marks` WHERE id_user = {$id_user} AND id_message = $id_mess");
+		$sql_query->execute();
+		return 0;
+	}
+
+	function get_user_mark($id_mess, $id_user) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("SELECT * FROM `marks` WHERE id_message = {$id_mess} AND id_user = {$id_user}");
+		$sql_query->execute();
+		$db_data = $sql_query->fetchobject();
+		return $db_data;
 	}
 
 	function get_row_count($id_page){	
@@ -113,15 +145,21 @@
 	}
 
 	function coment_in($coment, $capt) {
+		$coment = nl2br(htmlspecialchars($coment));
+		$capt = htmlspecialchars($capt);
 		if (empty($capt)) {
-			$capt = substr($coment, 0, 15);
-			$t = 'a';
-			$n = 14;
-			while ($t != ' ') {
-				$t = substr($capt, $n, 1);
-				$n--;
+			if (strlen($coment) > 15) {
+				$t = substr($coment, 15, 1);
+				$n = 15;
+				while ($t != ' ') {
+					$t = substr($coment, $n, 1);
+					$n--;
+				}
+				$capt = substr($coment, 0, $n)."...";
 			}
-			$capt = substr($coment, 0, $n);
+			else {
+				$capt = $coment;
+			}
 		}
 		$pdo = db_connect();
 		$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_page, capt, coment, date, id_message) VALUES (?, ?, ?, ?, NOW(), ?)");
@@ -131,7 +169,7 @@
 
 	function coment_out($id_page, $count, $id_mess) {
 		$pdo = db_connect();
-		$sql_query = $pdo->prepare("SELECT `coments`.id as cid, `users_data`.photo, `users`.login, `users`.id, `coments`.capt, `coments`.coment, `coments`.date FROM users, coments, users_data WHERE `users_data`.id = `users`.id AND `users`.id = `coments`.id_user AND `coments`.id_page = {$id_page} AND `coments`.id_message = {$id_mess} ORDER BY `coments`.`date` DESC LIMIT {$count},10");
+		$sql_query = $pdo->prepare("SELECT `coments`.id as cid, `coments`.id_page, `users_data`.photo, `users`.login, `users`.id, `coments`.capt, `coments`.coment, `coments`.date FROM users, coments, users_data WHERE `users_data`.id = `users`.id AND `users`.id = `coments`.id_user AND `coments`.id_page = {$id_page} AND `coments`.id_message = {$id_mess} ORDER BY `coments`.`date` DESC LIMIT {$count},10");
 		$sql_query->execute();
 		$db_data = $sql_query->fetchall();
 		return $db_data;
