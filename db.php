@@ -73,6 +73,13 @@
 		return 0;
 	}
 
+	function del_all_mark($id_mess) {
+		$pdo = db_connect();
+		$sql_query = $pdo->prepare("DELETE FROM `marks` WHERE id_message = $id_mess");
+		$sql_query->execute();
+		return 0;
+	}
+
 	function get_user_mark($id_mess, $id_user) {
 		$pdo = db_connect();
 		$sql_query = $pdo->prepare("SELECT * FROM `marks` WHERE id_message = {$id_mess} AND id_user = {$id_user}");

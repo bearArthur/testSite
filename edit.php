@@ -143,6 +143,11 @@
 		del_mark($_POST['del_mark'], $_SESSION['id']);
 		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
 	}
+
+	if (isset($_POST['del_all_mark'])) {
+		del_all_mark($_POST['del_all_mark']);
+		header("Location: edit.php?id={$_GET['id']}&page={$_GET['page']}&message={$_GET['message']}&cpage={$_GET['cpage']}&lg={$_GET['lg']}");
+	}
 ?>
 
 <!DOCTYPE HTMl5>
@@ -322,10 +327,14 @@
 							<?php 
 								endif;
 								endif;
+								$db_data_c = get_mark($message->id);
+								if (isset($_SESSION['role']) && $_SESSION['role'] == 3 && !empty($db_data_c)):
 							?>
+
+									<button class="mark" type="submit" name="del_all_mark" value="<?php echo $message->id; ?>">X</button>
+								<?php endif; ?>
 						<p class="data">
 							<?php 
-								$db_data_c = get_mark($message->id);
 								$mark = 0;
 								$n = 0;
 								if (!empty($db_data_c)) {
