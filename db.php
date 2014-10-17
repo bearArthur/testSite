@@ -168,9 +168,11 @@
 				$capt = $coment;
 			}
 		}
-		$pdo = db_connect();
-		$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_page, capt, coment, date, id_message) VALUES (?, ?, ?, ?, NOW(), ?)");
-		$sql_query->execute(array($_SESSION['id'], $_GET['id'], $capt, $coment, $_GET['message']));
+		if (!empty($coment)) {
+			$pdo = db_connect();
+			$sql_query = $pdo->prepare("INSERT INTO coments (id_user, id_page, capt, coment, date, id_message) VALUES (?, ?, ?, ?, NOW(), ?)");
+			$sql_query->execute(array($_SESSION['id'], $_GET['id'], $capt, $coment, $_GET['message']));
+		}
 		return 0;
 	}
 

@@ -1,0 +1,44 @@
+img.info{
+	position: relative;
+	max-width: 100%;
+	cursor: pointer;
+}
+img.info:hover {
+	cursor: pointer;
+}
+a.info {
+	margin:0px;
+	font-size: 18pt;
+	color: rgb(87,56,4);
+	font-weight: bold;
+	text-decoration: none;
+}
+a.info:visited {
+	margin:0px;
+	color: rgb(87,56,4);
+	font-weight: bold;
+	font-size: 18pt;
+	text-decoration: none;
+}
+p.info_b {
+	font-size: 10pt;
+	color: rgb(47,102,267);
+}
+p.info {
+	font-size: 10pt;
+	color: black
+}
+div.img {
+	width: auto;
+	border-bottom: 1px solid lightgrey;	
+	border-top: 1px solid lightgrey;
+	margin-bottom: 0px;
+	margin-top: 5px;
+	vertical-align: middle;
+}
+td.info {
+	text-align: right;
+}
+table.info {
+	border-bottom: 1px solid lightgrey;
+}

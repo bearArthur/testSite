@@ -1,0 +1,30 @@
+form.users {
+	border-top: 1px solid lightgrey;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	width: auto;
+	height: auto;	
+	padding-top: 5px;
+	padding-bottom: 5px;
+	position: relative;
+}
+a.users {
+	position: absolute;
+	color: rgb(87,56,4);
+	font-weight: bold;
+	font-size: 10pt;
+	text-align: left;
+	padding: 2px;
+	width: 30%;
+	height: auto;
+	text-decoration: none;
+	left: 24%;
+}
+a.users:hover {
+	text-decoration: underline;
+}
+img.users {
+	width: 20%;
+	margin: 0px;
+	position: relative;
+}

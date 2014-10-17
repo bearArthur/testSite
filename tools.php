@@ -144,88 +144,91 @@
 	<head>
 		<title> <?php echo $text['tools']; ?> </title>
 		<link rel="shortcut icon" href="images/toolsl.png" type="image/x-icon">
-		<link rel="stylesheet" type="text/css" href="Style.css"/>
+		<link rel="stylesheet" type="text/css" href="style/Style.css">
+		<link rel="stylesheet" type="text/css" href="style/menu.css">
+		<link rel="stylesheet" type="text/css" href="style/info.css">
+		<link rel="stylesheet" type="text/css" href="style/register.css">
+		<link rel="stylesheet" type="text/css" href="style/login.css">
+		<link rel="stylesheet" type="text/css" href="style/users.css">
+		<link rel="stylesheet" type="text/css" href="style/send.css">
+		<link rel="stylesheet" type="text/css" href="style/pager.css">
+		<link rel="stylesheet" type="text/css" href="style/message.css">
 		<meta charset="utf8"/>
 	</head>
 
 	<body>
 
-		<div id="back">
+		
 
-			<div id="menu">
-				<form method="POST"  action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg'] ?>" id="menu_b">
+			<div id="menu_back">
+				<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" class="menu">	
 					<?php
 						if (isset($_SESSION['id'])): 
 					?>
-						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
+						<button type="submit" name="profile" class="menu_button_1"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
-						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
+						<button type="submit" name="profile" class="menu_button_1" disabled="disabled"></button>			
 					<?php endif; ?>				
-					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+					<button type="submit" name="home" class="menu_button_2"></button>
 					<?php if (isset($_SESSION['id'])): ?>
-						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
+						<button type="submit" name="tools" class="menu_button_3"></button>
 					<?php	if ($_SESSION['role'] == 3): ?>
-						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+						<button  type="submit" name="site_tools" class="menu_button_4"></button>
 					<?php 
 						endif; 
 						elseif (!isset($_SESSION['id'])): 
 					?>
-						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
+						<button type="submit" name="tools" class="menu_button_3" disabled="disabled"></button>						
 					<?php endif; ?>
-					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
+					<button type="submit" name="login" class="menu_button_5"></button>
 				</form>
-				<a  href="tools.php?id=<?php echo $_GET['id']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
-				<a  href="tools.php?id=<?php echo $_GET['id']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
-			</div>
+				<a class="lang1" href="tools.php?id=<?php echo $_GET['id']; ?>&lg=ua">ua</a>
+				<a class="lang2" href="tools.php?id=<?php echo $_GET['id']; ?>&lg=en">en</a>		
+		</div>
 
+		<div id="back">
 			
-			<form id="info" method="POST" action="tools.php?id=<?php echo $_GET['id']; ?>&lg=<?php echo $_GET['lg'] ?>">
-				<?php if ($_SESSION['role'] == 3 && $_SESSION['id'] != $_GET['id']): ?>
-					<button class="mess_b" name="edit_user" value="<?php echo $_GET['id']; ?>" type="submit" >!</button>
-					<button class="mess_b_x" name="delete_user" value="<?php echo $_GET['id']; ?>" type="submit">x</button>	</br>
-				<?php endif; ?>
-				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
-				<a href="user.php?id=<?php echo $_GET['id']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
-				<table>
-					<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
+			<div id="info">
+					<?php if (isset($_SESSION['id'])): ?>
+						<img class="info" src="<?php echo $_SESSION['photo']; ?>"></img>
+						<div class="img"><a href="user.php?id=<?php echo $_GET['id']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="info"><?php echo $_SESSION['login']; ?></a></div>
+						<table class="info">
+						<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['name']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['name']; ?></p></td>
+							</tr>
+						<?php 
+							endif;
+							if (isset($_SESSION['id']) && ($_SESSION['surname'])): 
+						?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['surname']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['surname']; ?></p></td>
+							</tr>
+						<?php 
+							endif;
+							if (isset($_SESSION['id'])):
+						?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['email']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['email']; ?></p></td>
+							</tr>
+						<?php endif; ?>
 						<tr>
-							<td><p class="info_user_b"><?php echo $text['name']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['name']; ?></p></td>
+							<td class="info"><p class="info_b"><?php echo $text['date_reg']; ?></p></td>
+							<td><p class="info"><?php echo $_SESSION['registered']; ?></p></td>
 						</tr>
-					<?php 
-						endif;
-						if (isset($_SESSION['id']) && ($_SESSION['surname'])): 
-					?>
 						<tr>
-							<td><p class="info_user_b"><?php echo $text['surname']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['surname']; ?></p></td>
+							<td class="info"><p class="info_b"><?php echo $text['date_log']; ?></p></td>
+							<td><p class="info"><?php echo $_SESSION['last_login']; ?></p></td>
 						</tr>
-					<?php 
-						endif;
-						if (isset($_SESSION['id'])):
-					?>
-						<tr>
-							<td><p class="info_user_b"><?php echo $text['email']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['email']; ?></p></td>
-						</tr>
-					<?php endif; ?>
-					<tr>
-						<td><p class="info_user_b"><?php echo $text['date_reg']; ?></p></td>
-						<td><p class="info_user"><?php echo $_SESSION['registered']; ?></p></td>
-					</tr>
-					<tr>
-						<td><p class="info_user_b"><?php echo $text['date_log']; ?></p></td>
-						<td><p class="info_user"><?php echo $_SESSION['last_login']; ?></p></td>
-					</tr>
-				</table>
-				<?php 
-					if ($_SESSION['user_role'] == 0): 
-				?>
-					<p class="ban_error"><?php echo $text['ban_mess']; ?></p>
-				<?php 
-					endif; 
-				?>
-			</form>
+					</table>
+					<?php elseif (!isset($_SESSION['id'])): ?>
+						<img class="info" src="images/users/none.jpg"></img>
+						<div class="img"><a href="index.php" class="info"><?php echo $text['gest']; ?></a></div>
+					<?php endif; ?>			
+				</div>
 
 			<div id="content">			
 

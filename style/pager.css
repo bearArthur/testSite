@@ -1,0 +1,21 @@
+form.pager{
+	position:relative;
+	width: auto;
+	height: auto;
+	text-align: center;
+	margin-top: 5px;
+	padding-top: 5px;
+	margin-bottom: 0px;
+	border-top: 1px solid lightgrey;
+}
+a.pager{
+	margin-right: 5px;
+	text-decoration: none;
+	color: rgb(87,56,4);
+}
+a.pager_light{
+	margin-right: 5px;
+	color: rgb(47,102,267);
+	font-weight: bold;
+	text-decoration: none;
+}

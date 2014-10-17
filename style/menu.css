@@ -1,0 +1,99 @@
+form.menu{
+	height: 100%;
+	position: relative;
+	width: auto;
+	vertical-align: middle;
+	display: inline-block;
+	padding: 0px;
+	text-align: center;	
+	z-index: 3;
+}
+.menu_button_1, .menu_button_2, .menu_button_3, .menu_button_4, .menu_button_5{
+	background-color: white;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	border: none;
+	padding: 0px;
+	width:45px;
+	height:100%;
+	position: relative;
+	text-align: center;
+	margin-right: 10px;
+	display: inline-block;
+	color: white;
+	vertical-align: top;
+	font-size: 14pt;
+	margin-left: -4px;
+	box-shadow: none;
+}
+button.menu_button_1 {	
+	background-image: url(../images/user.png);
+}
+button.menu_button_2 {	
+	background-image: url(../images/home.png);
+}
+button.menu_button_3 {	
+	background-image: url(../images/tools.png);
+}
+button.menu_button_4 {	
+	background-image: url(../images/sitetools.png);
+}
+button.menu_button_5 {	
+	background-image: url(../images/doors.png);
+}
+.menu_button_1:hover, .menu_button_2:hover, .menu_button_3:hover, .menu_button_4:hover, .menu_button_5:hover{
+	cursor: pointer;	
+	background-color: orange;
+	z-index: 5;
+}
+button..menu_button_1 .menu_button_2 .menu_button_3 .menu_button_4 .menu_button_5:active{
+	box-shadow: 0 0 4px lightgrey;
+}
+button..menu_button_1 .menu_button_2 .menu_button_3 .menu_button_4 .menu_button_5:disabled:hover{
+	cursor: default;	
+	box-shadow: none;
+	z-index: 5;
+}
+a.lang2 {
+	color: white;
+	height: 40%;
+	position: absolute;
+	margin: 0px;
+	margin-right: 10px;
+	padding: 0px;
+	width: 40px;
+	right: 0px;
+	z-index: 3;
+	vertical-align: middle;
+	text-decoration: none;
+	line-height: 45px;
+}
+a.lang1{
+	color: white;
+	height: 40%;
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	margin-right: 10px;
+	width: 40px;
+	right: 50px;
+	z-index: 3;
+	vertical-align: middle;
+	text-decoration: none;
+	line-height: 45px;
+}
+}
+a.lang2:visited {
+	color: white;
+}
+a.lang1:visited {
+	color: white;
+}
+a.lang2:hover {
+	cursor: pointer;	
+	text-decoration: underline;
+}
+a.lang1:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}

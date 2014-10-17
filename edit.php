@@ -157,81 +157,96 @@
 	<head>
 		<title> <?php echo $_SESSION['name'].' '.$_SESSION['surname']; ?> </title>
 		<link rel="shortcut icon" href="images/pencil.png" type="image/x-icon">
-		<link rel="stylesheet" type="text/css" href="Style.css">
+		<link rel="stylesheet" type="text/css" href="style/Style.css">
+		<link rel="stylesheet" type="text/css" href="style/menu.css">
+		<link rel="stylesheet" type="text/css" href="style/info.css">
+		<link rel="stylesheet" type="text/css" href="style/register.css">
+		<link rel="stylesheet" type="text/css" href="style/login.css">
+		<link rel="stylesheet" type="text/css" href="style/users.css">
+		<link rel="stylesheet" type="text/css" href="style/send.css">
+		<link rel="stylesheet" type="text/css" href="style/pager.css">
+		<link rel="stylesheet" type="text/css" href="style/message.css">
+		<link rel="stylesheet" type="text/css" href="style/comment.css">
+		<link rel="stylesheet" type="text/css" href="style/pager_coment.css">
 		<meta charset="utf8">
 	</head>
 
 	<body>
 
-		<div id="back">
-
-			<div id="menu">
-				<form method="POST" action="<?php echo $link; ?>" id="menu_b">			
+			<div id="menu_back">
+				<form method="POST" action="user.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_GET['lg']; ?>" class="menu">	
 					<?php
 						if (isset($_SESSION['id'])): 
 					?>
-						<button type="submit" name="profile" class="pic"><img src="images/user.png" class="butt"></button>
+						<button type="submit" name="profile" class="menu_button_1"></button>
 					<?php elseif (!isset($_SESSION['id'])): ?>
-						<button type="submit" name="profile" class="pic" disabled="disabled"><img src="images/user_disabled.png" class="butt"></button>			
+						<button type="submit" name="profile" class="menu_button_1" disabled="disabled"></button>			
 					<?php endif; ?>				
-					<button type="submit" name="home" class="pic"><img src="images/home.png" class="butt"></button>
+					<button type="submit" name="home" class="menu_button_2"></button>
 					<?php if (isset($_SESSION['id'])): ?>
-						<button type="submit" name="tools" class="pic"><img src="images/tools.png" class="butt"></button>
+						<button type="submit" name="tools" class="menu_button_3"></button>
 					<?php	if ($_SESSION['role'] == 3): ?>
-						<button  type="submit" name="site_tools" class="pic"><img src="images/sitetools.png" class="butt"></button>
+						<button  type="submit" name="site_tools" class="menu_button_4"></button>
 					<?php 
 						endif; 
 						elseif (!isset($_SESSION['id'])): 
 					?>
-						<button type="submit" name="tools" class="pic" disabled="disabled"><img src="images/tools_disabled.png" class="butt"></button>						
+						<button type="submit" name="tools" class="menu_button_3" disabled="disabled"></button>						
 					<?php endif; ?>
-					<button type="submit" name="login" class="pic"><img src="images/doors.png" class="butt"></button>
+					<button type="submit" name="login" class="menu_button_5"></button>
 				</form>
-					<?php if (isset($_GET['message'])): ?>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
+				<?php if (isset($_GET['message'])): ?>
+						<a class="lang1" href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=ua">ua</a>
+						<a class="lang2"  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=en">en</a>
 					<?php elseif (isset($_GET['edit'])): ?>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=ua"><img src="images/ua.gif" class="lang1"></img></a>
-						<a  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=en"><img src="images/en.gif" class="lang2"></img></a>
-					<?php endif; ?>
-			</div>
+						<a class="lang1"  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=ua">ua</a>
+						<a class="lang2"  href="edit.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $nn; ?>&edit=<?php echo $_GET['edit']; ?>&lg=en">en</a>
+					<?php endif; ?>	
+		</div>
+
 			
+		<div id="back">
 			<div id="info">
-				<img src="<?php echo $_SESSION['photo']; ?>"></img></br>
-				<a href="user.php?id=<?php echo $_SESSION['id_page']; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="name"><?php echo $_SESSION['login']; ?></a>
-				<table>
-					<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
+					<?php if (isset($_SESSION['id'])): ?>
+						<img class="info" src="<?php echo $_SESSION['photo']; ?>"></img>
+						<div class="img"><a href="user.php?id=<?php echo $_GET['id']; ?>&page=1&lg=<?php echo $_GET['lg']; ?>" class="info"><?php echo $_SESSION['login']; ?></a></div>
+						<table class="info">
+						<?php if (isset($_SESSION['id']) && ($_SESSION['name'])): ?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['name']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['name']; ?></p></td>
+							</tr>
+						<?php 
+							endif;
+							if (isset($_SESSION['id']) && ($_SESSION['surname'])): 
+						?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['surname']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['surname']; ?></p></td>
+							</tr>
+						<?php 
+							endif;
+							if (isset($_SESSION['id'])):
+						?>
+							<tr>
+								<td class="info"><p class="info_b"><?php echo $text['email']; ?></p></td>
+								<td><p class="info"><?php echo $_SESSION['email']; ?></p></td>
+							</tr>
+						<?php endif; ?>
 						<tr>
-							<td><p class="info_user_b"><?php echo $text['name']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['name']; ?></p></td>
+							<td class="info"><p class="info_b"><?php echo $text['date_reg']; ?></p></td>
+							<td><p class="info"><?php echo $_SESSION['registered']; ?></p></td>
 						</tr>
-					<?php 
-						endif;
-						if (isset($_SESSION['id']) && ($_SESSION['surname'])): 
-					?>
 						<tr>
-							<td><p class="info_user_b"><?php echo $text['surname']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['surname']; ?></p></td>
+							<td class="info"><p class="info_b"><?php echo $text['date_log']; ?></p></td>
+							<td><p class="info"><?php echo $_SESSION['last_login']; ?></p></td>
 						</tr>
-					<?php 
-						endif;
-						if (isset($_SESSION['id'])):
-					?>
-						<tr>
-							<td><p class="info_user_b"><?php echo $text['email']; ?></p></td>
-							<td><p class="info_user"><?php echo $_SESSION['email']; ?></p></td>
-						</tr>
-					<?php endif; ?>
-					<tr>
-						<td><p class="info_user_b"><?php echo $text['date_reg']; ?></p></td>
-						<td><p class="info_user"><?php echo $_SESSION['registered']; ?></p></td>
-					</tr>
-					<tr>
-						<td><p class="info_user_b"><?php echo $text['date_log']; ?></p></td>
-						<td><p class="info_user"><?php echo $_SESSION['last_login']; ?></p></td>
-					</tr>
-				</table>
-			</div>
+					</table>
+					<?php elseif (!isset($_SESSION['id'])): ?>
+						<img class="info" src="images/users/none.jpg"></img>
+						<div class="img"><a href="index.php" class="info"><?php echo $text['gest']; ?></a></div>
+					<?php endif; ?>			
+				</div>
 
 			<div id="content">  
 
@@ -257,52 +272,52 @@
 					$message = get_message($_GET['message']);
 				?>
 				<p class="headd"><?php echo $text['more']; ?></p>
-				<form method="POST" action="<?php echo $link; ?>" id="edit">   					
+				<form method="POST" action="<?php echo $link; ?>" class="message">   					
 					<?php 
 						if (isset($_SESSION['id'])): 
 							if ($_SESSION['role'] == 1):
 								if ($_SESSION['id'] == $message->id_page && $_SESSION['id'] == $message->id_user):
 					?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
-						<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
 					<?php 
 								elseif ($_SESSION['id'] == $message->id_page && $_SESSION['id'] != $message->id_user):
 					 ?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
 					<?php 
 								endif;
 							elseif ($_SESSION['role'] == 2):
 								if ($_SESSION['id'] == $message->id_page && $_SESSION['id'] == $message->id_user):
 					?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
-						<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
 					<?php
 								elseif ($_SESSION['id'] == $message->id_page && $_SESSION['id'] != $message->id_user):
 					?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
 					<?php
 								elseif ($_SESSION['id'] != $message->id_page && $_SESSION['id'] == $message->id_user):
 					?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
-						<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
 					<?php
 								endif;
 							elseif ($_SESSION['role'] == 3):
 					?>
-						<button class="mess_b" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
-						<button class="mess_b" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
+						<button class="message_button" type="submit" name="mess_ok" value="<?php echo $message->id; ?>">x</button>
+						<button class="message_button" type="submit" name="mess_ed" value="<?php echo $message->id; ?>">!</button>
 					<?php
 							endif;
 						endif;
 					?>
-					<img src="<?php echo $message->photo; ?>" class="edit_photo"></img> 
-					<a href="user.php?id=<?php echo $message->id_user; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="edit_capt"><?php echo $message->login; ?></a>     <br/><br/>
+					<img src="<?php echo $message->photo; ?>" class="message"></img> 
+					<a href="user.php?id=<?php echo $message->id_user; ?>&page=<?php echo $_GET['page']; ?>&lg=<?php echo $_SESSION['lang']; ?>" class="message_login"><?php echo $message->login; ?></a>     <br/>
 					<?php if ($_GET['lg'] == 'ua'): ?>
-						<p class="head"><?php echo $message->capt; ?></p>     
-						<p class="mess"><?php echo $message->message; ?></p>   
+						<a class="message_h"><?php echo $message->capt; ?></a>     
+						<p class="message"><?php echo $message->message; ?></p>   
 					<?php elseif ($_GET['lg'] == 'en'): ?>  
-						<p class="head"><?php echo $message->capt_en; ?></p>     
-						<p class="mess"><?php echo $message->message_en; ?></p>   
+						<a class="message_h"><?php echo $message->capt_en; ?></a>     
+						<p class="message"><?php echo $message->message_en; ?></p>   
 					<?php endif; ?>
 						<p class="data_d"><?php echo $message->date; ?></p>
 					<div class="data_b">
@@ -357,8 +372,8 @@
 					</div>
 					</form>
 					<?php if (isset($_SESSION['id'])): ?>
-						<form class="coment_send" method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>">
-							<p class="coment_send"><?php echo $text['write_coment'] ?></p>
+						<p class="coment_send"><?php echo $text['write_coment'] ?></p>
+						<form class="coment_send" method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>">							
 							<textarea class="coment_send_h" name="coment_capt"></textarea>
 							<textarea class="coment_send_c" name="coment"></textarea>
 							<button class="coment_send" name="send_coment"><?php echo $text['send'] ?></button>
@@ -375,7 +390,7 @@
 								if ($row_count > 10):
 						?>
 
-						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_up_com">
+						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">
 							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><<</a>
 							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if ($_GET['cpage'] > 1) {echo $_GET['cpage'] - 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><</a>
 							<?php
@@ -457,7 +472,7 @@
 							if ($row_count > 10):
 						?>
 
-						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_down_com">
+						<form method="POST" action="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php echo $_GET['cpage']; ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com">
 							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=1&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><<</a>
 							<a href="edit.php?id=<?php echo $_GET['id']; ?>&page=<?php echo $_GET['page']; ?>&message=<?php echo $_GET['message']; ?>&cpage=<?php if ($_GET['cpage'] > 1) {echo $_GET['cpage'] - 1;}else{echo $_GET['cpage'];} ?>&lg=<?php echo $_GET['lg']; ?>" class="pager_com"><</a>
 							<?php

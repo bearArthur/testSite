@@ -1,0 +1,32 @@
+form.pager_com{
+	position: relative;
+	width: auto;
+	height: auto;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-bottom: 0px;
+	border-top: 1px solid lightgrey;
+	padding-top: 5px;
+}
+
+a.pager_com {
+	margin-right: 5px;
+	color: rgb(87,56,4);;
+	font-weight: bold;
+	font-size: 9pt;
+	text-decoration: none;	
+	vertical-align: middle;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+a.pager_com_l {
+	margin-right: 5px;
+	color: rgb(47,102,267);;
+	font-weight: bold;
+	font-size: 9pt;
+	text-decoration: none;	
+	vertical-align: middle;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}

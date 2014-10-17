@@ -1,52 +1,61 @@
 body{
 	background-repeat: no-repeat;
 	background-attachment:fixed;
-	background-color: white;
+	background-image: url('../images/fon.jpg');
 	margin:0px;
+	background-size: 100%;
 	padding:0px;
 	font-family: arial;
+	border-spacing: 0;
 }
 #back{
-	width: 70%;
-	left: 15%;
 	height: auto;
 	position: relative;
 	padding: 0px;
+	width: 70%;
+	left: 15%;
 	background-color: white;
+	top: 45px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	box-shadow: 0 1px 15px 3px grey;
 }
-#menu{
-	background-color: lightgrey;
-	height: 7%;
-	position: relative;
+#menu_back{
+	background-color: black;
+	height: 6.6%;
 	width: 100%;
+	position: fixed;
 	line-height: 50px;
 	vertical-align: middle;
 	z-index: 3;
+	margin-top: 0px;
 	margin-bottom: 0px;
-	border-bottom: 5px solid white;
 	text-align: center;	
+	opacity: 0.65;
 }
-#menu_b{
-	height: 100%;
+#info{
 	position: relative;
-	width: auto;
-	vertical-align: middle;
 	display: inline-block;
-	padding: 0px;
-	text-align: center;	
-	z-index: 3;
-}
-#head{
-	background: linear-gradient(to bottom, rgb(54,157,247), white);
-	height: 20%;
-	position: relative;
+	background-color: white;
+	min-height: 93%;
+	vertical-align: top;
 	text-align: center;
+	width: 30%; 
+	padding-left: 5px;
+}
+p.headd{
+	position: relative;
 	color: white;
-	line-height: 150px;
-	font-style: italic;
-	font-size: 400%;
-	width: 100%;
+	background-color: rgb(87,56,4);
+	font-weight: bold;
+	font-size: 10pt;
+	text-align: left;
+	padding: 2px;
+	width: auto;
+	height: auto;
 	margin: 0px;
+	margin-bottom: 0px;
+	opacity: 0.85;
 }
 #ank{
 	position: absolute;
@@ -60,15 +69,7 @@ body{
 	opacity: 0.5;
 	overflow: hidden;
 }
-#info{
-	position: relative;
-	display: inline-block;
-	background-color: white;
-	min-height: 93%;
-	vertical-align: top;
-	text-align: center;
-	width: 30%; 
-}
+
 #content{
 	position: relative;
 	min-height: 93%;
@@ -77,6 +78,7 @@ body{
 	margin: 0px;
 	vertical-align: top;
 	padding-right: 5px;
+	padding-bottom: 5px;
 	padding-left: 5px;
 	display: inline-block;
 	border-right: 1px solid lightgrey;
@@ -84,70 +86,47 @@ body{
 	z-index: 2;
 	overflow: hidden;
 	border-bottom: 1px solid lightgrey;
-	margin-bottom: 5px;
 }
-#register{
+div.show_photo {
+	position: fixed;
+	height: auto;
+	width: auto;
+	top: 10%;
+	left:23%;
+	background-color: white;
+	box-shadow: 0 0 5px 2px grey;
+	padding: 10px;
+	text-align: center;
+	z-index: 10;
+}
+img.show_photo {
 	position: relative;
+	max-height: 500px;
+	z-index: 11;
+	margin: 0px;
+}
+
+
+
+
+
+
+#head{
+	background: linear-gradient(to bottom, rgb(54,157,247), white);
+	height: 20%;
+	position: relative;
+	text-align: center;
+	color: white;
+	line-height: 150px;
+	font-style: italic;
+	font-size: 400%;
 	width: 100%;
-	height: auto;
-	margin-bottom: 5px;
-	padding: 0px;
-	border-bottom: 1px solid lightgrey;
+	margin: 0px;
 }
-.pager_b{
-	position:relative;
-	width: auto;
-	height: auto;
-	text-align: center;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	border-bottom: 1px solid lightgrey;
-}
-form.pager_up_com{
-	position: relative;
-	width: auto;
-	height: auto;
-	text-align: center;
-	margin-top: 0px;
-	margin-bottom: 5px;
-	padding-bottom: 0px;
-	padding-top: 5px;
-}
-form.pager_down_com{
-	position: relative;
-	width: auto;
-	height: auto;
-	text-align: center;
-	margin-top: 0px;
-	margin-bottom: 5px;
-	border-top: 1px solid lightgrey;
-	padding-bottom: 0px;
-	padding-top: 5px;
-}
-p.coment_r {
-	font-size: 9pt;
-	color: grey;
-}
-a.pager_com {
-	margin-right: 5px;
-	color: grey;
-	font-weight: bold;
-	font-size: 9pt;
-	text-decoration: none;	
-	vertical-align: middle;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-a.pager_com_l {
-	margin-right: 5px;
-	color: rgb(47,102,267);;
-	font-weight: bold;
-	font-size: 9pt;
-	text-decoration: none;	
-	vertical-align: middle;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
+
+
+
+
 #send{
 	width:auto;
 	height: auto;
@@ -161,13 +140,7 @@ a.pager_com_l {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-#login{
-	position: relative;
-	width: 100%;
-	height: auto;
-	margin-bottom: 5px;
-	border-bottom: 1px solid lightgrey;
-}
+
 #register p.head{
 	position: relative;
 	color: white;
@@ -201,12 +174,7 @@ li{
 	position: relative;
 	margin-right: 20px;
 }
-p.no_message {	
-	font-size: 10pt;
-	padding-bottom: 10px;
-	margin-bottom: 0px;
-	border-bottom: 1px solid lightgrey;
-}
+
 .edit_question_button {
 	position: relative;
 	text-align: center;
@@ -246,26 +214,15 @@ p.no_message {
 	margin-bottom: 10px;
 	box-shadow: 0 0 10px 1px grey;
 }
-p.info_user_b {
-	font-size: 10pt;
-	color: rgb(47,102,267);
-}
+
 p.info_user_e {
 	position: relative;
 	font-size: 10pt;
 	color: rgb(47,102,267);
 	left: 20%;
 }
-p.info_user_u {
-	position: relative;
-	font-size: 10pt;
-	color: rgb(47,102,267);
-	left: 10px;
-}
-p.info_user {
-	font-size: 10pt;
-	color: black
-}
+
+
 p.check_mess {
 	position: relative;
 	font-size: 10pt;
@@ -297,19 +254,7 @@ button.check_b:active{
   box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
   background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
 }
-p.headd{
-	position: relative;
-	color: white;
-	background-color: rgb(129,195,252);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	width: auto;
-	height: auto;
-	margin: 0px;
-	margin-bottom: 0px;
-}
+
 p.headd1{
 	position: relative;
 	color: white;
@@ -361,23 +306,7 @@ p.head{
 	left: 20%;
 	z-index: 4;
 }
-a.capt{
-	position: relative;
-	color: rgb(47,102,267);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	width: 65%;
-	text-decoration: none;
-	height: auto;
-	left: 18%;
-	margin-bottom: 5px;
-	z-index: 4;
-}
-a.capt:hover {
-	text-decoration: underline;
-}
+
 .edit_blue {
 	color: rgb(47,102,267);	
 }
@@ -432,35 +361,8 @@ a.edit_capt{
 	margin-bottom: 10px;
 	z-index: 4;
 }
-a.capth{
-	position: relative;
-	color: rgb(129,195,252);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	text-decoration: none;
-	width: 65%;
-	height: auto;
-	margin-top: 0px;
-	margin-bottom: 5px;
-	z-index: 4;
-	left: 19.6%;
-}
-a.captl{
-	position: relative;
-	color: rgb(129,195,252);
-	font-weight: bold;
-	font-size: 10pt;
-	padding: 2px;
-	text-decoration: none;
-	margin-top: 0px;
-	height: auto;
-	margin-bottom: 5px;
-	z-index: 4;
-	text-align: right;
-	left: 20%;
-}
+
+
 p.head_edit{
 	position: relative;
 	color: rgb(129,195,252);
@@ -497,73 +399,10 @@ p.head_edit{
 #menu button:active{
 	box-shadow: 0 0 4px lightgrey;
 }
-#menu button.pic{
-	background: lightgrey;
-	border:none;
-	width:45px;
-	height:100%;
-	position: relative;
-	text-align: center;
-	margin-right: 10px;
-	display: inline-block;
-	color: white;
-	vertical-align: top;
-	font-size: 14pt;
-	margin-left: -4px;
-	box-shadow: none;
-}
-#menu button.pic:hover{
-	cursor: pointer;	
-	box-shadow: 0 0 4px lightgrey;
-	z-index: 5;
-}
-#menu button.pic:active{
-	box-shadow: 0 0 4px lightgrey;
-}
-#menu button.pic:disabled:hover{
-	cursor: default;	
-	box-shadow: none;
-	z-index: 5;
-}
-#register p{
-	font-size: 10pt;
-}
-#register button{
-	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
-	text-align:middle;	
-  color: rgb(68,68,68);
-	color: black;
-	margin-top: 20px;
-	margin-bottom: 10px;
-	padding:3px;
-	float: right;
-	padding-left:10px;
-  border: 1px solid rgba(0,0,0,.1);
-	padding-right:5px;
-}
-a.pager{
-	margin-right: 5px;
-	text-decoration: none;
-	color: grey;
-}
-a.pager_light{
-	margin-right: 5px;
-	color: rgb(47,102,267);
-	font-weight: bold;
-	text-decoration: none;
-}
-#register button:hover{
-    border: 1px solid rgb(198,198,198);
-    box-shadow: 0 1px 2px rgba(0,0,0,.1);
-    cursor:pointer;
-    background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
-}
-#register button:active{
-    color: rgb(51,51,51);
-    border: 1px solid rgb(204,204,204);
-    box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
-    background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
-}
+
+
+
+
 #login p.head{
 	position: relative;
 	color: white;
@@ -606,21 +445,13 @@ a.pager_light{
     background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
 }
 
-td{
-	width: 60%;
-}
+
 table.tool td{
 	width: 200px;
 }
 p.tool{
 	color: rgb(47,102,267);
 	font-size: 10pt;
-}
-tr {
-	width: auto;
-}
-table{
-	margin: 0px auto 0px;
 }
 table.tool{
 	margin: 0;
@@ -654,17 +485,7 @@ button.tool:active{
   box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
   background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
 }
-#send textarea{
-	background-color:white;
-	resize:none;
-	position: relative;
-	font-size: 12;
-	font-family:arial;
-	margin-left: 10px;
-	margin-bottom: 5px;
-	padding: 2px;
-	border: 1px solid lightgrey;
-}
+
 textarea.edit_text{
 	background-color:white;
 	resize:none;
@@ -685,10 +506,7 @@ textarea.edit_text{
 	position: relative;
 	display: inline-block;
 }
-img.mess{
-	width: 15%;
-	position: absolute;
-}
+
 img.edit_mess{
 	width: 15%;
 	margin-right: 5px;
@@ -835,280 +653,13 @@ button.mess:active{
     box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
     background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
 }
-#info img{
-	position: relative;
-	max-width: 98%;
-	max-height: 400px;
-	margin-top: 5px;
-	overflow: hidden;
-}
-p.mess{
-	position: relative;
-	width: 80%;
-	height: auto;
-	text-align: justify;
-	font-family: arial;
-	left: 20%;
-	overflow: hidden;
-	margin-bottom: 5px;
-	margin-top: 5px;
-	font-size: 10pt;
-}
-p.data{
-	position: relative;
-	color: lightgrey;
-	font-weight: bold;
-	font-size: 8pt;
-	width: auto;
-	text-align: right;
-	padding: 2px;
-	margin: 0px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	display: inline-block;	
-	padding: 0px;	padding-right: 5px; 
-	border-right: 1px solid lightgrey;
-}
-.data_d {
-	position: relative;
-	color: lightgrey;
-	font-weight: bold;
-	font-size: 8pt;
-	width: auto;
-	text-align: right;
-	padding: 2px;
-	margin: 0px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	padding: 0px;	
-}
-.data_d:hover {
-	color: grey;
-}
-div.mark {
-	position: relative;
-	padding: 0px;
-	margin: 0px; 
-	margin-top: 0px;
-	margin-bottom: 0px;
-	display: inline-block;
-}
-p.data_l {
-	position: relative;
-	color: lightgrey;
-	font-weight: bold;
-	padding: 0px;
-	font-size: 8pt;
-	width: auto;
-	text-align: right;
-	padding: 0px;
-	margin: 0px;
-	display: inline-block;
-	padding-left: 5px; 
-}
-p.data:hover {
-	color: grey;
-}
-p.data_l:hover {
-	color: grey;
-}
-div.data_b {
-	position: relative;
-	left: 20%;
-	width: 80%;
-	padding: 0px;
-	margin: 0px;
-	text-align: right;
-}
-form.mess {
-	border-bottom: 1px solid lightgrey;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	width: auto;
-	height: auto;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-form.coment {
-	position: relative;
-	border-top: 1px solid lightgrey;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	width: auto;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	height: auto;
-}
-img.coment {
-	position: absolute;
-	width: 12%;
-	vertical-align: top;
-	margin-right: 5px;
-}
-a.coment {
-	position: relative;
-	left: 17%;
-	font-weight: bold;
-	font-size: 10pt;
-	text-decoration: none;	
-	color: rgb(47,102,267);
-}
-a.coment:visited {
-	font-weight: bold;
-	font-size: 10pt;
-	text-decoration: none;	
-	color: rgb(47,102,267);
-}
-a.coment:hover {
-	cursor: pointer;
-	text-decoration: underline;
-}
-p.coment_h {
-	font-size: 9pt;
-	color: rgb(129,195,252);
-	position: relative;
-	left: 18.5%;
-	width: 81.5%;
-	margin-top: 5px;
-	margin-bottom: 0px;
-}
-div.coment {
-	position: relative;
-	width: 84%;
-	left: 16%;
-	padding-top: 5px;
-	margin: 0px;
-	border-top: 1px solid lightgrey;
-}
-.coment_coments {
-	position: relative;
-	color: white;
-	background-color: rgb(129,195,252);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	width: auto;
-	height: auto;
-	margin: 0px;
-	margin-bottom: 0px;
-}
-p.coment_c {
-	font-size: 9pt;
-	color: black;
-	position: relative;
-	left: 18.5%;
-	width: 81.5%;
-	margin-top: 5px;
-	margin-bottom: 0px;
-	text-align: justify;
-}
-p.coment_d {
-	position: relative;
-	text-align: right;
-	font-size: 8pt;
-	color: lightgrey;
-	margin-top: 5px;
-	margin-bottom: 0px;
-}
-p.coment_d:hover {
-	color: grey;
-}
-button.coment {
-	float: right;
-	color: lightgrey; 
- 	text-decoration: none; 
- 	user-select: none;
-  background: white;
-	box-shadow: none;
-	font-size: 9pt;
-	margin-right: 0px;
-	border: none;
-	margin-bottom: 5px;
- 	outline: none;
- 	margin-left: 0px;
- 	z-index: 7;
-}
-button.coment:hover {
-	color: grey;
-	cursor: pointer;
-	box-shadow: none;
-	border: none;
-}
-button.coment:active {
-	color: grey;
-}
-form.coment_send {
-	position: relative;
-	border-top: 1px solid lightgrey;	
-	margin-bottom: 0px;
-	margin-top: 0px;
-	width: 84%;
-	left: 16%;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	height: auto;	
-}
-p.coment_send {	
-	position: relative;
-	color: white;
-	background-color: rgb(129,195,252);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	width: auto;
-	height: auto;
-	margin: 0px;
-	margin-bottom: 5px;
-}
-textarea.coment_send_h {
-	width: 100%;
-	height: 20px;
-	background-color:white;
-	resize:none;
-	position: relative;
-	font-size: 12;
-	font-family:arial;
-	padding: 2px;
-	border: 1px solid lightgrey;
-	margin-bottom: 5px;
-}
-textarea.coment_send_c {
-	width: 100%;
-	height: 50px;
-	background-color:white;
-	resize:none;
-	position: relative;
-	font-size: 12;
-	font-family:arial;
-	padding: 2px;
-	border: 1px solid lightgrey;
-	margin-bottom: 5px;
-}
-button.coment_send{
-	background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
-	font-size: 10pt;
-	text-align: center;	
-	padding:3px;
-	width:100px;
-	position: relative;
-	color: black;
-	margin-bottom: 5px;
-  border: 1px solid rgba(0,0,0,.1);
-}
-button.coment_send:hover{
-  border: 1px solid rgb(198,198,198);
-  cursor: pointer;
-  background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
-}
-button.coment_send:active{
-  color: rgb(51,51,51);
-  border: 1px solid rgb(204,204,204);
-  box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
-  background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
-}
+
+
+
+
+
+
+
 div.mess {
 	border-bottom: 1px solid lightgrey;
 	margin-bottom: 0px;
@@ -1116,72 +667,14 @@ div.mess {
 	width: auto;
 	height: auto;
 }
-button.mess_b {
-	float: right;
-	right: 0px;
-	top: 0px;
-	color: lightgrey; 
- 	text-decoration: none; 
- 	user-select: none;
-  background: white;
-	box-shadow: none;
-	border: none;
-	margin-bottom: 5px;
- 	outline: none;
- 	margin-left: 0px;
- 	z-index: 7;
-}
-button.mark {
-	position: relative;
-	display: inline-block;
-	color: lightgrey; 
- 	text-decoration: none; 
- 	user-select: none;
-  background: white;
-	box-shadow: none;
-	border: none;
-	font-size: 8pt;
- 	outline: none;
- 	padding: 0px;
- 	margin: 0;
- 	z-index: 7;
-}
-button.mark_l {
-	position: relative;
-	display: inline-block;
-	color: lightgrey; 
- 	text-decoration: none; 
- 	user-select: none;
-  background: white;
-	box-shadow: none;
-	border: none;
-	font-size: 8pt;
- 	outline: none;
- 	padding: 0px;
- 	margin: 0;
-	padding-right: 5px;
-	border-right: 1px solid lightgrey;
- 	z-index: 7;
-}
-button.mark:hover {
-	color: grey;
-	cursor: pointer;
-	box-shadow: none;
-	border: none;
-}
-button.mark:active {
-	color: grey;
-}
-button.mark_l:hover {
-	color: grey;
-	cursor: pointer;
-	box-shadow: none;
-}
-button.mark_l:active {
-	color: grey;
-}
+
+
 img.butt {
-	height: 90%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	height: 100%;
 }
 .check img {
 	height: 25%;
@@ -1189,15 +682,7 @@ img.butt {
 .edit_check img {
 	height: 25%;	
 }
-button.mess_b:hover {
-	color: grey;
-	cursor: pointer;
-	box-shadow: none;
-	border: none;
-}
-button.mess_b:active {
-	color: grey;
-}
+
 #info button.mess_b {
 	position: absolute;
 	width: auto;
@@ -1267,17 +752,7 @@ button.edit_b:hover {
 button.edit_b:active {
 	color: grey;
 }
-a.head {
-	position: absolute;
-	color: rgb(47,102,267);
-	font-weight: bold;
-	font-size: 10pt;
-	text-align: left;
-	padding: 2px;
-	width: 30%;
-	height: auto;
-	left: 24%;
-}
+
 div.users {
 	border-bottom: 1px solid lightgrey;
 	margin-bottom: 0px;
@@ -1287,71 +762,11 @@ div.users {
 	position: relative;
 	padding: 0px;
 }
-form.users {
-	border-bottom: 1px solid lightgrey;
-	margin-bottom: 0px;
-	margin-top: 10px;
-	width: auto;
-	height: auto;	
-	position: relative;
-	padding: 0px;
-}
-img.users {
-	width: 20%;
-	margin: 0px;
-	position: relative;
-	margin-bottom: 10px;
-}
-p.error{
-	color:red;
-	font-weight: bold;
-	font-style: italic;
-}
-a.name {
-	margin:0px;
-	font-size: 18pt;
-	color: rgb(47,102,267);
-	font-weight: bold;
-	text-decoration: none;
-}
-a.name:visited {
-	margin:0px;
-	color: rgb(47,102,267);
-	font-weight: bold;
-	font-size: 18pt;
-	text-decoration: none;
-}
-input {
-	background-color:white;
-	resize:none;
-	position: relative;
-	font-size: 12;
-	font-family:arial;
-	margin-left: 10px;
-	margin-bottom: 5px;
-	padding: 2px;
-	border: 1px solid lightgrey;
-}
-.lang2 {
-	height: 40%;
-	position: absolute;
-	margin-right: 10px;
-	width: 40px;
-	right: 0px;
-	margin-top: 12px;
-	z-index: 3;
-	vertical-align: middle;
-}
-.lang1{
-	height: 40%;
-	position: absolute;
-	margin-right: 10px;
-	width: 40px;
-	right: 50px;
-	margin-top: 12px;
-	z-index: 3;
-	vertical-align: middle;
-}
+
+
+
+
+
 .ban_error {
 	position: relative;
 	color:red;
